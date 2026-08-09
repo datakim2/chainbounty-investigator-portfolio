@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Reproducible, read-only blockchain incident investigation portfolio.">
+  <title>Home — On-Chain Investigation Portfolio</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  
+    <nav class="nav wrap" aria-label="Primary navigation">
+      <a class="brand" href="index.html">[YOUR NAME] <span>/ on-chain investigations</span></a>
+      <div class="nav-links">
+        <a href="index.html#cases">Cases</a>
+        <a href="methodology.html">Methodology</a>
+        <a href="evidence-integrity.html">Evidence integrity</a>
+        <a href="skills.html">Skills</a>
+      </div>
+    </nav>
+    
+  <main>
+    <section class="hero wrap">
+      <div class="hero-copy">
+        <p class="eyebrow">Independent research portfolio</p>
+        <h1>On-Chain Investigation &amp; Threat Intelligence</h1>
+        <p class="lead">Reproducible blockchain evidence, conservative attribution, and read-only forensic validation.</p>
+        <p>Backend engineering background with a focus on incident workflows that move from authoritative intelligence to IOC extraction, exact transaction verification, evidence preservation, and structured reporting.</p>
+        <div class="button-row"><a class="button" href="#cases">View case studies</a><a class="button secondary" href="methodology.html">View methodology</a></div>
+      </div>
+      <aside class="hero-note"><span class="eyebrow">Working principle</span><p>A source assertion is not treated as independent blockchain proof. Missing evidence stays missing.</p></aside>
+    </section>
+
+    <section class="section wrap" id="snapshot">
+      <div class="section-heading"><p class="eyebrow">Validation snapshot</p><h2>What has actually been reproduced</h2><p>Bounded 2026 incident sample. The figures are bounded sample measurements, not universal accuracy claims.</p></div>
+      <div class="metrics-grid">
+        <div class="metric"><strong>9</strong><span>Incidents analyzed</span><small>bounded 2026 sample</small></div>
+        <div class="metric"><strong>9/9</strong><span>Attacker + TX evidence extracted</span><small>source data</small></div>
+        <div class="metric"><strong>8/8</strong><span>Supported incidents reproduced on-chain</span><small>Ethereum / Gnosis / BSC</small></div>
+        <div class="metric"><strong>0</strong><span>TX not found</span><small>exact transaction checks</small></div>
+        <div class="metric"><strong>0</strong><span>Relationship mismatches</span><small>attacker relation checks</small></div>
+      </div>
+    </section>
+
+    <section class="section alt">
+      <div class="wrap split">
+        <div><p class="eyebrow">What I validate</p><h2>Facts before conclusions</h2><p>Validation checks the exact transaction and its relation to the source-attributed IOC. Blockchain reproduction confirms transaction facts; it does not establish legal identity or criminal liability.</p></div>
+        <div class="check-grid"><div>Exact transaction hash</div><div>Chain match</div><div>Sender / receiver relationship</div><div>Receipt status</div><div>Block and timestamp</div><div>Attacker relationship</div><div>Malicious contract relationship</div><div>Source provenance</div></div>
+      </div>
+      <div class="wrap provider-grid">
+        <div><strong>Ethereum / Gnosis</strong><span>Etherscan V2</span></div>
+        <div><strong>BNB Smart Chain</strong><span>Official read-only JSON-RPC</span></div>
+        <div><strong>Unsupported chain</strong><span>Remains UNVERIFIED</span></div>
+      </div>
+    </section>
+
+    <section class="section wrap">
+      <div class="section-heading"><p class="eyebrow">Investigation workflow</p><h2>From source intelligence to human review</h2></div>
+      <div class="flow"><div>Authoritative<br>incident source</div><i>↓</i><div>IOC extraction<br>&amp; role classification</div><i>↓</i><div>Incident<br>deduplication</div><i>↓</i><div>Exact on-chain<br>validation</div><i>↓</i><div>Evidence<br>package</div><i>↓</i><div>Human<br>review</div></div>
+      <div class="role-row"><span>ATTACKER_WALLET</span><span>ATTACKER_CONTRACT</span><span>HELPER_CONTRACT</span><span>VICTIM</span><span>UNKNOWN</span></div>
+    </section>
+
+    <section class="section alt" id="cases">
+      <div class="wrap"><div class="section-heading"><p class="eyebrow">Selected case studies</p><h2>Bounded incidents, reproducible evidence</h2><p>Only incidents with preserved source attribution and <code>VERIFIED</code> read-only validation are included.</p></div><div class="case-grid">
+    <article class="case-card">
+      <div class="eyebrow">bsc · 2026-03-10</div>
+      <h3>Movie Token</h3>
+      <p>Bridge Exploit with a source-attributed attacker address and exact transaction reproduced on-chain.</p>
+      <div class="tag-row"><span class="tag verified">VERIFIED</span><span class="tag">bsc_official_json_rpc</span></div>
+      <a class="text-link" href="cases/movie-token.html">Read case study →</a>
+    </article>
+    
+    <article class="case-card">
+      <div class="eyebrow">ethereum · 2026-01-08</div>
+      <h3>Truebit</h3>
+      <p>Bridge Exploit with a source-attributed attacker address and exact transaction reproduced on-chain.</p>
+      <div class="tag-row"><span class="tag verified">VERIFIED</span><span class="tag">Etherscan V2</span></div>
+      <a class="text-link" href="cases/truebit.html">Read case study →</a>
+    </article>
+    
+    <article class="case-card">
+      <div class="eyebrow">gnosis · 2026-06-01</div>
+      <h3>GnosisPay</h3>
+      <p>Bridge Exploit with a source-attributed attacker address and exact transaction reproduced on-chain.</p>
+      <div class="tag-row"><span class="tag verified">VERIFIED</span><span class="tag">Etherscan V2</span></div>
+      <a class="text-link" href="cases/gnosispay.html">Read case study →</a>
+    </article>
+    </div></div>
+    </section>
+
+    <section class="section wrap">
+      <div class="split">
+        <div><p class="eyebrow">Architecture</p><h2>A validation system, not a link collector</h2><div class="architecture"><span>Public security intelligence</span><b>↓</b><span>Incident normalization</span><b>↓</b><span>IOC / role extraction</span><b>↓</b><span>On-chain verification</span><b>↓</b><span>Evidence classification</span><b>↓</b><span>Structured report</span></div></div>
+        <div><p class="eyebrow">Safety posture</p><h2>Read-only by design</h2><ul class=""><li>No transaction signing</li><li>No transaction broadcast</li><li>No suspicious wallet connection</li><li>No malicious contract execution</li><li>No fabricated wallet, TX, victim claim, or screenshot</li></ul></div>
+      </div>
+    </section>
+
+    <section class="section alt"><div class="wrap split"><div><p class="eyebrow">About</p><h2>[YOUR NAME]</h2><p>I am a backend engineer with experience in regulated financial systems and a strong interest in blockchain security, threat intelligence, and reproducible digital investigations.</p><p>My approach combines software engineering discipline with evidence-first on-chain analysis.</p></div><div><p class="eyebrow">Contact</p><p>Email: <strong>[YOUR PUBLIC EMAIL]</strong></p><p>X: <strong>[YOUR X PROFILE]</strong></p><p class="muted">Contact details remain placeholders until explicitly supplied.</p></div></div></section>
+    <section class="section wrap"><div class="section-heading"><p class="eyebrow">Scope and limits</p><h2>Conservative attribution is a feature</h2><p>Public incident intelligence and on-chain relationships can support a technical lead. They do not replace off-chain evidence, lawful investigative process, or a court's determination.</p><p>Providers used in the bounded sample: Etherscan V2 (6), bsc_official_json_rpc (2), SOLANA_VALIDATOR_NOT_CONFIGURED (1).</p></div></section>
+    </main>
+  <footer class="footer wrap">
+    <p>Independent research portfolio. Not affiliated with ChainBounty.</p>
+    <p>Address attribution is based on public incident intelligence and reproducible blockchain evidence; it is not a legal determination of criminal liability.</p>
+  </footer>
+</body>
+</html>

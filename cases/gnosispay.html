@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Reproducible, read-only blockchain incident investigation portfolio.">
+  <title>GnosisPay case study — On-Chain Investigation Portfolio</title>
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  
+    <nav class="nav wrap" aria-label="Primary navigation">
+      <a class="brand" href="../index.html">[YOUR NAME] <span>/ on-chain investigations</span></a>
+      <div class="nav-links">
+        <a href="../index.html#cases">Cases</a>
+        <a href="../methodology.html">Methodology</a>
+        <a href="../evidence-integrity.html">Evidence integrity</a>
+        <a href="../skills.html">Skills</a>
+      </div>
+    </nav>
+    
+  <main>
+    <section class="case-hero wrap"><p class="eyebrow">Case study · gnosis · 2026-06-01</p><h1>GnosisPay</h1><p class="lead">Bridge Exploit — source-attributed attacker address with exact on-chain relationship reproduced.</p><span class="tag verified">VERIFIED</span></section>
+    <section class="section wrap case-layout">
+      <article>
+        <h2>Executive summary</h2>
+        <dl class="facts"><dt>Project</dt><dd>GnosisPay</dd><dt>Incident date</dt><dd>2026-06-01</dd><dt>Chain</dt><dd>gnosis</dd><dt>Investigation scope</dt><dd>Source attribution and exact referenced transaction validation</dd><dt>Validation status</dt><dd>VERIFIED</dd></dl>
+        <h2>Source provenance</h2>
+        <p><strong>CertiK official incident analysis</strong></p><p>Publication date: Not separately preserved</p><p>Retrieved date: Not separately preserved</p><p><a href="https://www.certik.com/blog/gnosispay-incident-analysis" rel="noreferrer noopener">https://www.certik.com/blog/gnosispay-incident-analysis</a></p>
+        <h2>Primary IOC</h2>
+        <dl class="facts"><dt>Primary attacker</dt><dd><code>0x81BA8A2b895D30280bca199C2Ff75f3F058d4C6c</code></dd><dt>Primary transaction</dt><dd><code>0x61af4383f94423f4acad8d4a04d3d473f258be3806f3e55d2f18b7fcc475e580</code></dd><dt>Malicious contract</dt><dd><p class="muted">None recorded.</p></dd></dl>
+        <h2>Independent on-chain validation</h2>
+        <div class="table-wrap"><table><tbody><tr><th>Provider</th><td>Etherscan V2</td></tr><tr><th>Chain</th><td>gnosis</td></tr><tr><th>Block</th><td>46468498</td></tr><tr><th>Timestamp</th><td>2026-06-01T05:26:10Z</td></tr><tr><th>From</th><td><code>0x81ba8a2b895d30280bca199c2ff75f3f058d4c6c</code></td></tr><tr><th>To</th><td><code>0xb0ca54ac663b96f526996bb6594b5b5648142673</code></td></tr><tr><th>Receipt</th><td>0x1</td></tr><tr><th>Attacker relationship</th><td>ATTACKER_IS_FROM</td></tr></tbody></table></div>
+        <h2>Why the relationship matters</h2>
+        <p>The cited source attributes the primary address to the incident. Read-only validation independently reproduced the exact referenced transaction on the stated chain and matched the recorded relationship: <strong>ATTACKER_IS_FROM</strong>.</p>
+        <p>On 01 June 2026 an attacker drained dozens of GnosisPay Safes on Gnosis Chain. The attack vector was a signature-verification flaw in the GnosisPay Delay module. The module checks transactions via moduleTxSignedBy(). It parses r,s,v values from attacker-controlled msg.data. By crafting nested signature data, the attacker caused verification to traverse first through a Biconomy Safe and then to an attacker-controlled contract that always returned the EIP-1271 magic value. As a result, the module incorrectly accepted the transaction as authorized. The attacker queued 41 transactions, waited out the module&#x27;s cooldown, then executed them. Each transferred EURe and GNO to attacker wallets leading to the loss of ~$265K.</p>
+        <h2>Related IOC</h2><ul class=""><li>0xb1834575349c6eb56675c35b4109c3d3a77dd2fc</li><li>0xcce200e0df2f6d47ccffc0e64e6fddc145b13f67</li><li>0x3eb18b54a2f7500c3a581197cf7d9fbd62516160</li><li>0x0dda0f6aa7b3e0ec1273c4e47c56e7bed57a308c</li><li>0x31c2c0c4ab37a89d38968735f8ad9f04e332576a</li></ul>
+        <h2>Confidence and limitations</h2><h3>Verified fact</h3><ul class=""><li>The exact referenced transaction exists on the stated chain.</li><li>The recorded sender/receiver relationship was reproduced read-only.</li></ul><h3>Source-attributed</h3><ul class=""><li>The attacker address attribution originates from the cited authoritative incident analysis.</li></ul><h3>Unverified / unknown</h3><ul class=""><li>Legal identity and criminal liability are not established by this portfolio.</li><li>Downstream fund-flow tracing and off-chain identity attribution are outside this bounded sample.</li></ul><h3>Limitations</h3><ul class=""><li>Malicious attribution currently originates from one authoritative public incident source.</li><li>Blockchain validation confirms transaction facts and address relationships, not legal culpability.</li><li>Downstream fund-flow tracing may be incomplete.</li></ul>
+      </article>
+      <aside class="case-aside"><div class="aside-card"><p class="eyebrow">Explorer evidence</p><ul><li><a href="https://gnosisscan.io/address/0x81BA8A2b895D30280bca199C2Ff75f3F058d4C6c" rel="noreferrer noopener">Wallet explorer</a></li><li><a href="https://gnosisscan.io/tx/0x61af4383f94423f4acad8d4a04d3d473f258be3806f3e55d2f18b7fcc475e580" rel="noreferrer noopener">Transaction explorer</a></li></ul><p class="muted">Only official explorer and source URLs are linked. No malicious website is opened or promoted.</p></div><div class="aside-card disclaimer"><p class="eyebrow">Attribution disclaimer</p><p>Address attribution in this portfolio is based on publicly available incident intelligence and reproducible blockchain evidence. On-chain validation confirms transaction facts and address relationships; it does not constitute a legal determination of criminal liability. Final attribution may require additional off-chain evidence and lawful investigative process.</p></div></aside>
+    </section>
+    </main>
+  <footer class="footer wrap">
+    <p>Independent research portfolio. Not affiliated with ChainBounty.</p>
+    <p>Address attribution is based on public incident intelligence and reproducible blockchain evidence; it is not a legal determination of criminal liability.</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,249 @@
+{
+  "generated_at": "2026-08-09T10:44:55Z",
+  "portfolio_title": "On-Chain Investigation & Threat Intelligence Portfolio",
+  "owner_name": "[YOUR NAME]",
+  "owner_email": "[YOUR PUBLIC EMAIL]",
+  "owner_x": "[YOUR X PROFILE]",
+  "github_url": null,
+  "independent_project": true,
+  "not_affiliated_with_chainbounty": true,
+  "metrics": {
+    "incidents_analyzed": 9,
+    "attacker_and_tx_extracted": 9,
+    "supported_incidents": 8,
+    "onchain_verified": 8,
+    "tx_not_found": 0,
+    "relationship_mismatches": 0,
+    "unsupported_incidents": 1,
+    "tests_passing": 137,
+    "sample": "Bounded 2026 incident sample"
+  },
+  "providers": {
+    "Etherscan V2": 6,
+    "bsc_official_json_rpc": 2,
+    "SOLANA_VALIDATOR_NOT_CONFIGURED": 1
+  },
+  "cases": [
+    {
+      "project": "Movie Token",
+      "slug": "movie-token",
+      "incident_date": "2026-03-10",
+      "chain": "bsc",
+      "attack_type": "BRIDGE_EXPLOIT",
+      "source": {
+        "name": "CertiK official incident analysis",
+        "url": "https://www.certik.com/blog/movie-token-incident-analysis",
+        "publication_date": null,
+        "retrieved_at": null
+      },
+      "primary_attacker": "0xDB0901A3254f47c0CE57fFFCE2C730Bc33A1c0e1",
+      "related_attacker_addresses": [],
+      "malicious_contracts": [
+        "0xDf7eD22d1FA65eAc11A0806b7bb5F35d4A1e957D"
+      ],
+      "primary_transaction": "0xb8127c3c65e915dffde8ce725b247e5b04e2e19d137e67c51d79eb625c1f55c9",
+      "transaction_hashes": [
+        "0xac5b4c3a3cc43af97bc3c2ca58ac97e2f12aeb0737aa1fb91fd92bd5e6858577",
+        "0xb8127c3c65e915dffde8ce725b247e5b04e2e19d137e67c51d79eb625c1f55c9",
+        "0xc7ca9a0c99e433fc68fe20563193d5d442de74194befaf8afc508591f6822f45",
+        "0xfb57c980286ea8755a7b69de5a74483c44b1f74af4ab34b7c52e733fc62dfca6"
+      ],
+      "wallet_explorer_url": "https://bscscan.com/address/0xDB0901A3254f47c0CE57fFFCE2C730Bc33A1c0e1",
+      "transaction_explorer_url": "https://bscscan.com/tx/0xb8127c3c65e915dffde8ce725b247e5b04e2e19d137e67c51d79eb625c1f55c9",
+      "validation": {
+        "provider": "bsc_official_json_rpc",
+        "provider_raw": "bsc_official_json_rpc",
+        "status": "VERIFIED",
+        "validated_chain": "bsc",
+        "block_number": 85677867,
+        "block_timestamp": "2026-03-10T00:06:42Z",
+        "from": "0xdb0901a3254f47c0ce57fffce2c730bc33a1c0e1",
+        "to": "0xb7cbad7dd322bd1610c61c539ff2d36909055f54",
+        "receipt_status": "0x1",
+        "matched_attacker_addresses": [
+          "0xDB0901A3254f47c0CE57fFFCE2C730Bc33A1c0e1"
+        ],
+        "matched_malicious_contracts": [],
+        "relationships": [
+          "ATTACKER_IS_FROM"
+        ]
+      },
+      "technical_summary": "On 10 March 2026, the Movie Token (MT) contract was exploited for approximately $242,000 due to a critical flaw in its 'sell' logic. The",
+      "loss_amount": "approximately $242,000",
+      "confidence": {
+        "verified_fact": [
+          "The exact referenced transaction exists on the stated chain.",
+          "The recorded sender/receiver relationship was reproduced read-only."
+        ],
+        "source_attributed": [
+          "The attacker address attribution originates from the cited authoritative incident analysis."
+        ],
+        "inference": [],
+        "unverified": [
+          "Legal identity and criminal liability are not established by this portfolio."
+        ],
+        "unknown": [
+          "Downstream fund-flow tracing and off-chain identity attribution are outside this bounded sample."
+        ]
+      },
+      "limitations": [
+        "Malicious attribution currently originates from one authoritative public incident source.",
+        "Blockchain validation confirms transaction facts and address relationships, not legal culpability.",
+        "Downstream fund-flow tracing may be incomplete."
+      ]
+    },
+    {
+      "project": "Truebit",
+      "slug": "truebit",
+      "incident_date": "2026-01-08",
+      "chain": "ethereum",
+      "attack_type": "BRIDGE_EXPLOIT",
+      "source": {
+        "name": "CertiK official incident analysis",
+        "url": "https://www.certik.com/blog/truebit-incident-analysis",
+        "publication_date": null,
+        "retrieved_at": null
+      },
+      "primary_attacker": "0x6C8EC8f14bE7C01672d31CFa5f2CEfeAB2562b50",
+      "related_attacker_addresses": [],
+      "malicious_contracts": [
+        "0x1De399967B206e446B4E9AeEb3Cb0A0991bF11b8"
+      ],
+      "primary_transaction": "0xcd4755645595094a8ab984d0db7e3b4aabde72a5c87c4f176a030629c47fb014",
+      "transaction_hashes": [
+        "0xcd4755645595094a8ab984d0db7e3b4aabde72a5c87c4f176a030629c47fb014"
+      ],
+      "wallet_explorer_url": "https://etherscan.io/address/0x6C8EC8f14bE7C01672d31CFa5f2CEfeAB2562b50",
+      "transaction_explorer_url": "https://etherscan.io/tx/0xcd4755645595094a8ab984d0db7e3b4aabde72a5c87c4f176a030629c47fb014",
+      "validation": {
+        "provider": "Etherscan V2",
+        "provider_raw": "etherscan_v2_validator",
+        "status": "VERIFIED",
+        "validated_chain": "ethereum",
+        "block_number": 24191019,
+        "block_timestamp": "2026-01-08T16:02:35Z",
+        "from": "0x6c8ec8f14be7c01672d31cfa5f2cefeab2562b50",
+        "to": "0x1de399967b206e446b4e9aeeb3cb0a0991bf11b8",
+        "receipt_status": "0x1",
+        "matched_attacker_addresses": [
+          "0x6C8EC8f14bE7C01672d31CFa5f2CEfeAB2562b50"
+        ],
+        "matched_malicious_contracts": [
+          "0x1De399967B206e446B4E9AeEb3Cb0A0991bF11b8"
+        ],
+        "relationships": [
+          "ATTACKER_IS_FROM",
+          "ATTACKER_INTERACTED_WITH_CONTRACT"
+        ]
+      },
+      "technical_summary": "On 08 January 2026, Truebit was exploited for approximately $26.6M as a result of an integer overflow",
+      "loss_amount": "approximately $26.6M",
+      "confidence": {
+        "verified_fact": [
+          "The exact referenced transaction exists on the stated chain.",
+          "The recorded sender/receiver relationship was reproduced read-only."
+        ],
+        "source_attributed": [
+          "The attacker address attribution originates from the cited authoritative incident analysis."
+        ],
+        "inference": [],
+        "unverified": [
+          "Legal identity and criminal liability are not established by this portfolio."
+        ],
+        "unknown": [
+          "Downstream fund-flow tracing and off-chain identity attribution are outside this bounded sample."
+        ]
+      },
+      "limitations": [
+        "Malicious attribution currently originates from one authoritative public incident source.",
+        "Blockchain validation confirms transaction facts and address relationships, not legal culpability.",
+        "Downstream fund-flow tracing may be incomplete."
+      ]
+    },
+    {
+      "project": "GnosisPay",
+      "slug": "gnosispay",
+      "incident_date": "2026-06-01",
+      "chain": "gnosis",
+      "attack_type": "BRIDGE_EXPLOIT",
+      "source": {
+        "name": "CertiK official incident analysis",
+        "url": "https://www.certik.com/blog/gnosispay-incident-analysis",
+        "publication_date": null,
+        "retrieved_at": null
+      },
+      "primary_attacker": "0x81BA8A2b895D30280bca199C2Ff75f3F058d4C6c",
+      "related_attacker_addresses": [
+        "0xb1834575349c6eb56675c35b4109c3d3a77dd2fc",
+        "0xcce200e0df2f6d47ccffc0e64e6fddc145b13f67",
+        "0x3eb18b54a2f7500c3a581197cf7d9fbd62516160",
+        "0x0dda0f6aa7b3e0ec1273c4e47c56e7bed57a308c",
+        "0x31c2c0c4ab37a89d38968735f8ad9f04e332576a"
+      ],
+      "malicious_contracts": [],
+      "primary_transaction": "0x61af4383f94423f4acad8d4a04d3d473f258be3806f3e55d2f18b7fcc475e580",
+      "transaction_hashes": [
+        "0x06b0fee08be38ff1eaf4739e9c3b186a86d88e8615f93d2f2864938fd8751eed",
+        "0x1138fd1bb2708062cb577b0ffb275c847a1964efff019156768e530e3a52dd7e",
+        "0x49eaf2a11532fdcd9c9c53bc8ed10c8f5dade0344f10ed22a8345894a9185be7",
+        "0x61af4383f94423f4acad8d4a04d3d473f258be3806f3e55d2f18b7fcc475e580",
+        "0xd957b7cc73ae8d40082124eb2a67284d8e287babfe4e6859f0772a1eab8c54af",
+        "0xf5b2da9be48138e2fcc168af392804c7485c74855b693a743c7adb44d97443b2"
+      ],
+      "wallet_explorer_url": "https://gnosisscan.io/address/0x81BA8A2b895D30280bca199C2Ff75f3F058d4C6c",
+      "transaction_explorer_url": "https://gnosisscan.io/tx/0x61af4383f94423f4acad8d4a04d3d473f258be3806f3e55d2f18b7fcc475e580",
+      "validation": {
+        "provider": "Etherscan V2",
+        "provider_raw": "etherscan_v2_validator",
+        "status": "VERIFIED",
+        "validated_chain": "gnosis",
+        "block_number": 46468498,
+        "block_timestamp": "2026-06-01T05:26:10Z",
+        "from": "0x81ba8a2b895d30280bca199c2ff75f3f058d4c6c",
+        "to": "0xb0ca54ac663b96f526996bb6594b5b5648142673",
+        "receipt_status": "0x1",
+        "matched_attacker_addresses": [
+          "0x81BA8A2b895D30280bca199C2Ff75f3F058d4C6c"
+        ],
+        "matched_malicious_contracts": [],
+        "relationships": [
+          "ATTACKER_IS_FROM"
+        ]
+      },
+      "technical_summary": "On 01 June 2026 an attacker drained dozens of GnosisPay Safes on Gnosis Chain. The attack vector was a signature-verification flaw in the GnosisPay Delay module. The module checks transactions via moduleTxSignedBy(). It parses r,s,v values from attacker-controlled msg.data. By crafting nested signature data, the attacker caused verification to traverse first through a Biconomy Safe and then to an attacker-controlled contract that always returned the EIP-1271 magic value. As a result, the module incorrectly accepted the transaction as authorized. The attacker queued 41 transactions, waited out the module's cooldown, then executed them. Each transferred EURe and GNO to attacker wallets leading to the loss of ~$265K.",
+      "loss_amount": "$265K",
+      "confidence": {
+        "verified_fact": [
+          "The exact referenced transaction exists on the stated chain.",
+          "The recorded sender/receiver relationship was reproduced read-only."
+        ],
+        "source_attributed": [
+          "The attacker address attribution originates from the cited authoritative incident analysis."
+        ],
+        "inference": [],
+        "unverified": [
+          "Legal identity and criminal liability are not established by this portfolio."
+        ],
+        "unknown": [
+          "Downstream fund-flow tracing and off-chain identity attribution are outside this bounded sample."
+        ]
+      },
+      "limitations": [
+        "Malicious attribution currently originates from one authoritative public incident source.",
+        "Blockchain validation confirms transaction facts and address relationships, not legal culpability.",
+        "Downstream fund-flow tracing may be incomplete."
+      ]
+    }
+  ],
+  "preferred_cases_missing": [],
+  "safety": {
+    "transaction_signing": 0,
+    "transaction_broadcasting": 0,
+    "wallet_connections": 0,
+    "malicious_contract_execution": 0,
+    "fabricated_wallets": 0,
+    "fabricated_transactions": 0,
+    "fabricated_victim_claims": 0,
+    "fabricated_screenshots": 0
+  }
+}

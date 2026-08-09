@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Reproducible, read-only blockchain incident investigation portfolio.">
+  <title>Methodology — On-Chain Investigation Portfolio</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  
+    <nav class="nav wrap" aria-label="Primary navigation">
+      <a class="brand" href="index.html">[YOUR NAME] <span>/ on-chain investigations</span></a>
+      <div class="nav-links">
+        <a href="index.html#cases">Cases</a>
+        <a href="methodology.html">Methodology</a>
+        <a href="evidence-integrity.html">Evidence integrity</a>
+        <a href="skills.html">Skills</a>
+      </div>
+    </nav>
+    
+  <main><section class="page-head wrap"><p class="eyebrow">Methodology</p><h1>Investigation Methodology</h1><p class="lead">A bounded, reproducible workflow for evidence-first blockchain incident analysis.</p></section><section class="section wrap prose"><h2>1. Source selection</h2><p>Use authoritative public incident analysis and preserve the source URL and retrieval context. A source assertion is not treated as independent on-chain proof.</p><h2>2. IOC extraction</h2><p>Extract only addresses, contracts, and transaction hashes explicitly supported by the source. Do not infer an attacker from proximity alone.</p><h2>3. Role classification</h2><p>Separate ATTACKER_WALLET, ATTACKER_CONTRACT, HELPER_CONTRACT, PROTOCOL/TOKEN, VICTIM, and UNKNOWN roles.</p><h2>4. Independent blockchain validation</h2><p>Query the stated chain in read-only mode. Reproduce the exact transaction, chain, sender/receiver relationship, receipt, block, and timestamp.</p><h2>5. Evidence preservation</h2><p>Keep the source, validation fields, explorer references, and evidence summary together so another reviewer can reproduce the claim.</p><h2>6. Confidence classification</h2><p>Distinguish VERIFIED FACT, SOURCE-ATTRIBUTED, INFERENCE, UNVERIFIED, and UNKNOWN. Conflicting evidence blocks promotion.</p><h2>7. Human review</h2><p>Duplicate checks, current form fields, and final submission decisions remain manual. No ChainBounty page is crawled or submitted by the workflow.</p><h2>8. Limitations</h2><p>On-chain data confirms transactions and relationships, not legal identity. Downstream tracing, exchange attribution, and off-chain evidence require additional lawful work.</p></section></main>
+  <footer class="footer wrap">
+    <p>Independent research portfolio. Not affiliated with ChainBounty.</p>
+    <p>Address attribution is based on public incident intelligence and reproducible blockchain evidence; it is not a legal determination of criminal liability.</p>
+  </footer>
+</body>
+</html>
