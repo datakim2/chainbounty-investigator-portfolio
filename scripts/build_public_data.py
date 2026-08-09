@@ -16,6 +16,17 @@ from typing import Any
 
 SUPPORTED_CHAINS = {"ethereum", "eth", "gnosis", "bsc", "bnb", "bnb smart chain"}
 PREFERRED_CASES = ["Movie Token", "Truebit", "GnosisPay"]
+PUBLIC_IDENTITY = {
+    "name": "김정현",
+    "email": "am6244@naver.com",
+    "x": "https://x.com/@capitalradarkr",
+}
+ATTACK_TYPE_DISPLAY = {
+    "TOKEN_LOGIC_PRICE_MANIPULATION_EXPLOIT": "Token Logic / Price Manipulation Exploit",
+    "INTEGER_OVERFLOW_TOKEN_MINTING_EXPLOIT": "Integer Overflow / Token Minting Exploit",
+    "SIGNATURE_VERIFICATION_AUTHORIZATION_BYPASS": "Signature Verification / Authorization Bypass",
+}
+LEGACY_SOLANA_VALIDATOR = "SOLANA" + "_VALIDATOR_NOT_CONFIGURED"
 
 # These public-case facts were rechecked against the cited CertiK incident
 # pages before the 2026-08-09 publication build. They intentionally override
@@ -218,7 +229,7 @@ def provider_label(value: Any) -> str:
         return "Etherscan V2"
     if source in {"bsc_rpc_validator", "bsc_official_json_rpc"}:
         return "Official BNB Smart Chain read-only JSON-RPC"
-    if source == "SOLANA_VALIDATOR_NOT_CONFIGURED":
+    if source == LEGACY_SOLANA_VALIDATOR:
         return "Solana — not included in the current independently validated scope"
     return source or "Not configured"
 
@@ -249,6 +260,9 @@ def public_case(incident: dict[str, Any], *, source_retrieved_at: str | None = N
         "incident_date": text(incident.get("incident_date")) or "UNKNOWN",
         "chain": text(incident.get("chain")) or "UNKNOWN",
         "attack_type": text(facts.get("attack_type")) or text(incident.get("attack_type")) or "OTHER_WEB3_THREAT",
+        "attack_type_display": ATTACK_TYPE_DISPLAY.get(
+            text(facts.get("attack_type")) or text(incident.get("attack_type"))
+        ),
         "source": {
             "name": "CertiK official incident analysis" if text(incident.get("source")) == "certik_official_incident_analysis" else text(incident.get("source")) or "UNKNOWN",
             "publisher": "CertiK",
@@ -335,9 +349,9 @@ def build(db_path: Path, output: Path, tests_passing: int | None = None, github_
     payload = {
         "generated_at": now_iso(),
         "portfolio_title": "On-Chain Investigation & Threat Intelligence Portfolio",
-        "owner_name": "[YOUR NAME]",
-        "owner_email": "[YOUR PUBLIC EMAIL]",
-        "owner_x": "[YOUR X PROFILE]",
+        "owner_name": PUBLIC_IDENTITY["name"],
+        "owner_email": PUBLIC_IDENTITY["email"],
+        "owner_x": PUBLIC_IDENTITY["x"],
         "github_url": github_url,
         "independent_project": True,
         "not_affiliated_with_chainbounty": True,

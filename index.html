@@ -10,7 +10,7 @@
 <body>
   
     <nav class="nav wrap" aria-label="Primary navigation">
-      <a class="brand" href="index.html">[YOUR NAME] <span>/ on-chain investigations</span></a>
+      <a class="brand" href="index.html">김정현 <span>/ on-chain investigations</span></a>
       <div class="nav-links">
         <a href="index.html#cases">Cases</a>
         <a href="methodology.html">Methodology</a>
@@ -65,7 +65,7 @@
     <article class="case-card">
       <div class="eyebrow">bsc · 2026-03-10</div>
       <h3>Movie Token</h3>
-      <p>Token Logic Price Manipulation Exploit with a source-attributed attacker address and exact transaction reproduced on-chain.</p>
+      <p>Token Logic / Price Manipulation Exploit with a source-attributed attacker address and exact transaction reproduced on-chain.</p>
       <p class="muted">According to CertiK&#x27;s Incident Analysis, the Movie Token (MT) contract was exploited on 10 March 2026 for approximately $242,000 after a double-counting flaw in its sell logic credited the same tokens to both the liquidity pair and pendingBurnAmount. A later burn caused an artificial supply shock and distorted the MT price, allowing value to be drained from the pool.</p>
       <div class="tag-row"><span class="tag verified">VERIFIED</span><span class="tag">Official BNB Smart Chain read-only JSON-RPC</span></div>
       <a class="text-link" href="cases/movie-token.html">Read case study →</a>
@@ -74,7 +74,7 @@
     <article class="case-card">
       <div class="eyebrow">ethereum · 2026-01-08</div>
       <h3>Truebit</h3>
-      <p>Integer Overflow Token Minting Exploit with a source-attributed attacker address and exact transaction reproduced on-chain.</p>
+      <p>Integer Overflow / Token Minting Exploit with a source-attributed attacker address and exact transaction reproduced on-chain.</p>
       <p class="muted">According to CertiK&#x27;s Incident Analysis, Truebit was exploited on 8 January 2026 for approximately $26.6M through an integer-overflow vulnerability in pre-0.8 Solidity arithmetic. Exploiter 1 used the flawed calculation to mint TRU for zero ETH and swap the minted tokens for ETH; this public case separately records the source&#x27;s second exploiter and downstream fund-flow claims.</p>
       <div class="tag-row"><span class="tag verified">VERIFIED</span><span class="tag">Etherscan V2</span></div>
       <a class="text-link" href="cases/truebit.html">Read case study →</a>
@@ -83,7 +83,7 @@
     <article class="case-card">
       <div class="eyebrow">gnosis · 2026-06-01</div>
       <h3>GnosisPay</h3>
-      <p>Signature Verification Authorization Bypass with a source-attributed attacker address and exact transaction reproduced on-chain.</p>
+      <p>Signature Verification / Authorization Bypass with a source-attributed attacker address and exact transaction reproduced on-chain.</p>
       <p class="muted">According to CertiK&#x27;s Incident Analysis, an attacker drained dozens of GnosisPay Safes on 1 June 2026 by exploiting signature verification in the GnosisPay Delay module. Crafted nested signature data reached attacker-prepared EIP-1271 contracts that returned the expected magic value, so queued transactions transferred EURe and GNO from victim Safes.</p>
       <div class="tag-row"><span class="tag verified">VERIFIED</span><span class="tag">Etherscan V2</span></div>
       <a class="text-link" href="cases/gnosispay.html">Read case study →</a>
@@ -98,7 +98,7 @@
       </div>
     </section>
 
-    <section class="section alt"><div class="wrap split"><div><p class="eyebrow">About</p><h2>[YOUR NAME]</h2><p>I am a backend engineer with experience in regulated financial systems and a strong interest in blockchain security, threat intelligence, and reproducible digital investigations.</p><p>My approach combines software engineering discipline with evidence-first on-chain analysis.</p></div><div><p class="eyebrow">Contact</p><p>Email: <strong>[YOUR PUBLIC EMAIL]</strong></p><p>X: <strong>[YOUR X PROFILE]</strong></p><p class="muted">Contact details remain placeholders until explicitly supplied.</p></div></div></section>
+    <section class="section alt"><div class="wrap split"><div><p class="eyebrow">About</p><h2>김정현</h2><p>I am a backend engineer with experience in regulated financial systems and a strong interest in blockchain security, threat intelligence, and reproducible digital investigations.</p><p>My approach combines software engineering discipline with evidence-first on-chain analysis.</p></div><div><p class="eyebrow">Contact</p><p>Email: <strong>am6244@naver.com</strong></p><p>X: <strong><a href="https://x.com/@capitalradarkr" rel="noreferrer noopener">https://x.com/@capitalradarkr</a></strong></p><p class="muted">Public contact details supplied by the portfolio owner.</p></div></div></section>
     <section class="section wrap"><div class="section-heading"><p class="eyebrow">Scope and limits</p><h2>Conservative attribution is a feature</h2><p>Public incident intelligence and on-chain relationships can support a technical lead. They do not replace off-chain evidence, lawful investigative process, or a court's determination.</p><p>Providers used in the bounded sample: Etherscan V2 (6), Official BNB Smart Chain read-only JSON-RPC (2), Solana — not included in the current independently validated scope (1).</p><p><strong>137 automated software tests passed</strong> in the latest local validation run.</p></div></section>
     </main>
   <footer class="footer wrap">

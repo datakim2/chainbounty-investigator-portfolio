@@ -21,8 +21,19 @@ HIGH_RISK = [
 ]
 
 
+def allowed_public_emails(root: Path) -> set[str]:
+    data_path = root / "data" / "portfolio.json"
+    try:
+        data = json.loads(data_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, json.JSONDecodeError):
+        return set()
+    email = data.get("owner_email")
+    return {str(email).lower()} if email else set()
+
+
 def scan(root: Path) -> list[dict[str, object]]:
     findings: list[dict[str, object]] = []
+    allowed_emails = allowed_public_emails(root)
     for path in sorted(root.rglob("*")):
         if not path.is_file() or path.name == "secret_scan.py" or path.suffix.lower() not in TEXT_EXTENSIONS or "__pycache__" in path.parts:
             continue
@@ -37,7 +48,7 @@ def scan(root: Path) -> list[dict[str, object]]:
                 if pattern.search(line):
                     # Placeholders and policy examples are intentionally not
                     # printed; only the location is reported.
-                    if name == "email_address" and "[YOUR" in line.upper():
+                    if name == "email_address" and any(match.lower() in allowed_emails for match in pattern.findall(line)):
                         continue
                     findings.append({"type": name, "file": str(path.relative_to(root)), "line": line_number})
     return findings

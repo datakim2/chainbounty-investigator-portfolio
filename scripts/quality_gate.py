@@ -13,8 +13,20 @@ EXPECTED_ATTACK_TYPES = {
     "Truebit": "INTEGER_OVERFLOW_TOKEN_MINTING_EXPLOIT",
     "GnosisPay": "SIGNATURE_VERIFICATION_AUTHORIZATION_BYPASS",
 }
-PLACEHOLDERS = ("[YOUR NAME]", "[YOUR PUBLIC EMAIL]", "[YOUR X PROFILE]")
-INTERNAL_ENUMS = ("SOLANA_VALIDATOR_NOT_CONFIGURED", "BRIDGE_EXPLOIT")
+EXPECTED_DISPLAY_LABELS = {
+    "Movie Token": "Token Logic / Price Manipulation Exploit",
+    "Truebit": "Integer Overflow / Token Minting Exploit",
+    "GnosisPay": "Signature Verification / Authorization Bypass",
+}
+PLACEHOLDER_WORD = "YOUR"
+PLACEHOLDERS = (f"[{PLACEHOLDER_WORD} NAME]", f"[{PLACEHOLDER_WORD} PUBLIC EMAIL]", f"[{PLACEHOLDER_WORD} X PROFILE]")
+LEGACY_SOLANA_ENUM = "SOLANA" + "_VALIDATOR_NOT_CONFIGURED"
+LEGACY_BRIDGE_ENUM = "BRIDGE" + "_EXPLOIT"
+LEGACY_BRIDGE_LABEL = "Bridge" + " Exploit"
+
+
+def normalize_label(value: object) -> str:
+    return re.sub(r"[^a-z0-9]+", "", str(value or "").lower())
 
 
 def main() -> int:
@@ -32,6 +44,8 @@ def main() -> int:
             continue
         if case.get("attack_type") != expected_type:
             errors.append(f"wrong attack type: {project}")
+        if normalize_label(case.get("attack_type_display")) != normalize_label(EXPECTED_DISPLAY_LABELS[project]):
+            errors.append(f"wrong display attack label: {project}")
         summary = str(case.get("technical_summary") or "")
         if not summary.startswith("According to CertiK") or not re.search(r"[.!?]$", summary):
             errors.append(f"summary provenance or truncation: {project}")
@@ -58,14 +72,14 @@ def main() -> int:
 
     for path in root.glob("*.html"):
         text = path.read_text(encoding="utf-8")
-        for token in INTERNAL_ENUMS:
+        for token in (LEGACY_SOLANA_ENUM, LEGACY_BRIDGE_ENUM):
             if token in text:
                 errors.append(f"public internal enum {token}: {path.name}")
         if "sanctioned mixer" in text.lower():
             errors.append(f"unsupported sanctions wording: {path.name}")
     for path in (root / "cases").glob("*.html"):
         text = path.read_text(encoding="utf-8")
-        if "BRIDGE_EXPLOIT" in text or "Bridge Exploit" in text:
+        if LEGACY_BRIDGE_ENUM in text or LEGACY_BRIDGE_LABEL in text:
             errors.append(f"stale attack type: {path.name}")
 
     for path in root.rglob("*"):

@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-08-09T11:58:53Z",
+  "generated_at": "2026-08-09T23:39:30Z",
   "portfolio_title": "On-Chain Investigation & Threat Intelligence Portfolio",
-  "owner_name": "[YOUR NAME]",
-  "owner_email": "[YOUR PUBLIC EMAIL]",
-  "owner_x": "[YOUR X PROFILE]",
+  "owner_name": "김정현",
+  "owner_email": "am6244@naver.com",
+  "owner_x": "https://x.com/@capitalradarkr",
   "github_url": "https://github.com/datakim2/chainbounty-investigator-portfolio",
   "independent_project": true,
   "not_affiliated_with_chainbounty": true,
@@ -30,6 +30,7 @@
       "incident_date": "2026-03-10",
       "chain": "bsc",
       "attack_type": "TOKEN_LOGIC_PRICE_MANIPULATION_EXPLOIT",
+      "attack_type_display": "Token Logic / Price Manipulation Exploit",
       "source": {
         "name": "CertiK official incident analysis",
         "publisher": "CertiK",
@@ -109,6 +110,7 @@
       "incident_date": "2026-01-08",
       "chain": "ethereum",
       "attack_type": "INTEGER_OVERFLOW_TOKEN_MINTING_EXPLOIT",
+      "attack_type_display": "Integer Overflow / Token Minting Exploit",
       "source": {
         "name": "CertiK official incident analysis",
         "publisher": "CertiK",
@@ -252,6 +254,7 @@
       "incident_date": "2026-06-01",
       "chain": "gnosis",
       "attack_type": "SIGNATURE_VERIFICATION_AUTHORIZATION_BYPASS",
+      "attack_type_display": "Signature Verification / Authorization Bypass",
       "source": {
         "name": "CertiK official incident analysis",
         "publisher": "CertiK",

@@ -35,11 +35,25 @@ def role_group(title: str, values: Any, note: str = "") -> str:
     return f"<h3>{esc(title)}</h3>{bullets(values)}{suffix}"
 
 
-def page(title: str, body: str, *, prefix: str = "") -> str:
+ATTACK_TYPE_DISPLAY = {
+    "TOKEN_LOGIC_PRICE_MANIPULATION_EXPLOIT": "Token Logic / Price Manipulation Exploit",
+    "INTEGER_OVERFLOW_TOKEN_MINTING_EXPLOIT": "Integer Overflow / Token Minting Exploit",
+    "SIGNATURE_VERIFICATION_AUTHORIZATION_BYPASS": "Signature Verification / Authorization Bypass",
+}
+
+
+def format_attack_label(case: dict[str, Any]) -> str:
+    value = case.get("attack_type_display") or ATTACK_TYPE_DISPLAY.get(case.get("attack_type"))
+    if value:
+        return esc(value)
+    return esc(case.get("attack_type")).replace("_", " ").title()
+
+
+def page(title: str, body: str, *, prefix: str = "", owner_name: Any = "") -> str:
     css = f"{prefix}styles.css"
     nav = f"""
     <nav class="nav wrap" aria-label="Primary navigation">
-      <a class="brand" href="{prefix}index.html">[YOUR NAME] <span>/ on-chain investigations</span></a>
+      <a class="brand" href="{prefix}index.html">{esc(owner_name)} <span>/ on-chain investigations</span></a>
       <div class="nav-links">
         <a href="{prefix}index.html#cases">Cases</a>
         <a href="{prefix}methodology.html">Methodology</a>
@@ -79,7 +93,7 @@ def case_card(case: dict[str, Any]) -> str:
     <article class="case-card">
       <div class="eyebrow">{esc(case.get('chain'))} · {esc(case.get('incident_date'))}</div>
       <h3>{esc(case.get('project'))}</h3>
-      <p>{esc(case.get('attack_type')).replace('_', ' ').title()} with a source-attributed attacker address and exact transaction reproduced on-chain.</p>
+      <p>{format_attack_label(case)} with a source-attributed attacker address and exact transaction reproduced on-chain.</p>
       <p class="muted">{esc(case.get('technical_summary'))}</p>
       <div class="tag-row"><span class="tag verified">{esc(validation.get('status'))}</span><span class="tag">{esc(validation.get('provider'))}</span></div>
       <a class="text-link" href="cases/{esc(case.get('slug'))}.html">Read case study →</a>
@@ -92,6 +106,9 @@ def build_index(data: dict[str, Any]) -> str:
     safety = data.get("safety") or {}
     providers = data.get("providers") or {}
     cases = data.get("cases") or []
+    owner_name = data.get("owner_name")
+    owner_email = data.get("owner_email")
+    owner_x = data.get("owner_x")
     github = data.get("github_url")
     github_cta = f'<a class="button secondary" href="{esc(github)}">Public repository</a>' if github else ""
     case_cards = "".join(case_card(case) for case in cases)
@@ -147,10 +164,10 @@ def build_index(data: dict[str, Any]) -> str:
       </div>
     </section>
 
-    <section class="section alt"><div class="wrap split"><div><p class="eyebrow">About</p><h2>[YOUR NAME]</h2><p>I am a backend engineer with experience in regulated financial systems and a strong interest in blockchain security, threat intelligence, and reproducible digital investigations.</p><p>My approach combines software engineering discipline with evidence-first on-chain analysis.</p></div><div><p class="eyebrow">Contact</p><p>Email: <strong>[YOUR PUBLIC EMAIL]</strong></p><p>X: <strong>[YOUR X PROFILE]</strong></p><p class="muted">Contact details remain placeholders until explicitly supplied.</p></div></div></section>
+    <section class="section alt"><div class="wrap split"><div><p class="eyebrow">About</p><h2>{esc(owner_name)}</h2><p>I am a backend engineer with experience in regulated financial systems and a strong interest in blockchain security, threat intelligence, and reproducible digital investigations.</p><p>My approach combines software engineering discipline with evidence-first on-chain analysis.</p></div><div><p class="eyebrow">Contact</p><p>Email: <strong>{esc(owner_email)}</strong></p><p>X: <strong><a href="{esc(owner_x)}" rel="noreferrer noopener">{esc(owner_x)}</a></strong></p><p class="muted">Public contact details supplied by the portfolio owner.</p></div></div></section>
     <section class="section wrap"><div class="section-heading"><p class="eyebrow">Scope and limits</p><h2>Conservative attribution is a feature</h2><p>Public incident intelligence and on-chain relationships can support a technical lead. They do not replace off-chain evidence, lawful investigative process, or a court's determination.</p><p>Providers used in the bounded sample: {esc(', '.join(f'{key} ({value})' for key, value in providers.items()) or 'Recorded in the case studies')}.</p><p><strong>{esc(metrics.get('tests_passing') or 'UNKNOWN')} automated software tests passed</strong> in the latest local validation run.</p></div></section>
     """
-    return page("Home", body)
+    return page("Home", body, owner_name=data.get("owner_name"))
 
 
 def build_case(case: dict[str, Any]) -> str:
@@ -186,11 +203,11 @@ def build_case(case: dict[str, Any]) -> str:
     return page(f"{case.get('project')} case study", body, prefix="../")
 
 
-def build_case_v2(case: dict[str, Any]) -> str:
+def build_case_v2(case: dict[str, Any], owner_name: Any = "") -> str:
     validation = case.get("validation") or {}
     source = case.get("source") or {}
     relations = validation.get("relationships") or []
-    attack_label = esc(case.get("attack_type")).replace("_", " ").title()
+    attack_label = format_attack_label(case)
     explorer_links = []
     if case.get("wallet_explorer_url"):
         explorer_links.append(f"<li>{link(case.get('wallet_explorer_url'), 'Wallet explorer')}</li>")
@@ -289,10 +306,10 @@ def build_case_v2(case: dict[str, Any]) -> str:
       <aside class="case-aside"><div class="aside-card"><p class="eyebrow">Explorer evidence</p><ul>{''.join(explorer_links)}</ul><p class="muted">Only official explorer and source URLs are linked. No malicious website is opened or promoted.</p></div><div class="aside-card disclaimer"><p class="eyebrow">Attribution disclaimer</p><p>Address attribution in this portfolio is based on publicly available incident intelligence and reproducible blockchain evidence. On-chain validation confirms transaction facts and address relationships; it does not constitute a legal determination of criminal liability. Final attribution may require additional off-chain evidence and lawful investigative process.</p></div></aside>
     </section>
     """
-    return page(f"{case.get('project')} case study", body, prefix="../")
+    return page(f"{case.get('project')} case study", body, prefix="../", owner_name=owner_name)
 
 
-def build_methodology() -> str:
+def build_methodology(owner_name: Any = "") -> str:
     sections = [
         ("1. Source selection", "Use authoritative public incident analysis and preserve the source URL and retrieval context. A source assertion is not treated as independent on-chain proof."),
         ("2. IOC extraction", "Extract only addresses, contracts, and transaction hashes explicitly supported by the source. Do not infer an attacker from proximity alone."),
@@ -304,21 +321,21 @@ def build_methodology() -> str:
         ("8. Limitations", "On-chain data confirms transactions and relationships, not legal identity. Downstream tracing, exchange attribution, and off-chain evidence require additional lawful work."),
     ]
     body = '<section class="page-head wrap"><p class="eyebrow">Methodology</p><h1>Investigation Methodology</h1><p class="lead">A bounded, reproducible workflow for evidence-first blockchain incident analysis.</p></section><section class="section wrap prose">' + "".join(f"<h2>{esc(title)}</h2><p>{esc(text)}</p>" for title, text in sections) + '</section>'
-    return page("Methodology", body)
+    return page("Methodology", body, owner_name=owner_name)
 
 
-def build_integrity() -> str:
+def build_integrity(owner_name: Any = "") -> str:
     body = f"""
     <section class="page-head wrap"><p class="eyebrow">Evidence integrity</p><h1>Read-only by design</h1><p class="lead">The workflow is designed to preserve evidence without interacting with suspicious applications or changing blockchain state.</p></section>
     <section class="section wrap prose"><h2>Never performed</h2>{bullets(['Transaction signing', 'Transaction broadcasting', 'Wallet connection to suspicious applications', 'Malicious contract execution', 'Fabricated wallets', 'Fabricated transactions', 'Fabricated victim claims', 'Fabricated screenshots'])}<h2>Always preserved</h2>{bullets(['Source provenance', 'Exact transaction hash', 'Chain and block context', 'Sender / receiver relationship', 'Validation status', 'Unsupported and conflicting findings'])}<h2>Publication boundary</h2><p>The public portfolio contains only a sanitized dataset. API keys, tokens, cookies, login data, internal paths, private DB records, and unnecessary victim information are excluded.</p></section>
     """
-    return page("Evidence integrity", body)
+    return page("Evidence integrity", body, owner_name=owner_name)
 
 
-def build_skills() -> str:
+def build_skills(owner_name: Any = "") -> str:
     skills = ["Python", "Blockchain transaction analysis", "Ethereum", "BNB Smart Chain", "Gnosis", "Etherscan V2", "JSON-RPC", "IOC extraction", "Address-role classification", "Incident deduplication", "Evidence validation", "Source provenance", "Reproducible investigation workflows", "Structured forensic reporting"]
     body = f'<section class="page-head wrap"><p class="eyebrow">Capabilities</p><h1>Skills in demonstrated scope</h1><p class="lead">Only capabilities exercised by the current project are listed.</p></section><section class="section wrap"><div class="skill-grid">{"".join(f"<div class=\"skill\">{esc(skill)}</div>" for skill in skills)}</div><p class="muted">No claims are made for commercial intelligence platforms or tools not used in this workflow.</p></section>'
-    return page("Skills", body)
+    return page("Skills", body, owner_name=owner_name)
 
 
 def write_site(data_path: Path, root: Path) -> dict[str, Any]:
@@ -328,11 +345,12 @@ def write_site(data_path: Path, root: Path) -> dict[str, Any]:
     (root / "data").mkdir(exist_ok=True)
     (root / "data" / "portfolio.json").write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (root / "index.html").write_text(build_index(data), encoding="utf-8")
-    (root / "methodology.html").write_text(build_methodology(), encoding="utf-8")
-    (root / "evidence-integrity.html").write_text(build_integrity(), encoding="utf-8")
-    (root / "skills.html").write_text(build_skills(), encoding="utf-8")
+    owner_name = data.get("owner_name")
+    (root / "methodology.html").write_text(build_methodology(owner_name), encoding="utf-8")
+    (root / "evidence-integrity.html").write_text(build_integrity(owner_name), encoding="utf-8")
+    (root / "skills.html").write_text(build_skills(owner_name), encoding="utf-8")
     for case in data.get("cases") or []:
-        (root / "cases" / f"{case['slug']}.html").write_text(build_case_v2(case), encoding="utf-8")
+        (root / "cases" / f"{case['slug']}.html").write_text(build_case_v2(case, owner_name), encoding="utf-8")
     css = """/* Local, dependency-free styles for the public portfolio. */
 :root { --ink:#16202a; --muted:#5b6875; --line:#d9e0e6; --paper:#f7f8f6; --panel:#ffffff; --accent:#0e6b62; --accent-soft:#e3f1ed; --dark:#10252b; --max:1120px; }
 * { box-sizing:border-box; } html { scroll-behavior:smooth; } body { margin:0; color:var(--ink); background:var(--paper); font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height:1.65; } a { color:var(--accent); } code { font-family:ui-monospace, SFMono-Regular, Consolas, monospace; font-size:.9em; overflow-wrap:anywhere; } .wrap { width:min(calc(100% - 40px), var(--max)); margin-inline:auto; } .nav { min-height:72px; display:flex; align-items:center; justify-content:space-between; gap:24px; border-bottom:1px solid var(--line); } .brand { color:var(--ink); font-weight:750; text-decoration:none; letter-spacing:-.02em; } .brand span { color:var(--muted); font-weight:500; } .nav-links { display:flex; gap:20px; flex-wrap:wrap; justify-content:flex-end; } .nav-links a { color:var(--muted); text-decoration:none; font-size:.92rem; } .nav-links a:hover { color:var(--ink); } .hero { display:grid; grid-template-columns:1.5fr .75fr; gap:72px; padding:96px 0 82px; align-items:end; } h1,h2,h3 { line-height:1.15; letter-spacing:-.035em; margin:0 0 18px; } h1 { font-size:clamp(2.8rem, 7vw, 5.7rem); max-width:900px; } h2 { font-size:clamp(1.75rem, 3vw, 2.5rem); } h3 { font-size:1.15rem; } p { margin:0 0 18px; } .lead { font-size:clamp(1.2rem, 2.3vw, 1.55rem); color:#33434d; max-width:780px; } .eyebrow { color:var(--accent); font-size:.74rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; margin-bottom:14px; } .hero-note { border-left:4px solid var(--accent); padding:20px 0 12px 24px; font-size:1.08rem; } .button-row { display:flex; gap:12px; flex-wrap:wrap; margin-top:30px; } .button { display:inline-block; padding:11px 17px; border-radius:5px; color:#fff; background:var(--accent); text-decoration:none; font-weight:700; } .button.secondary { color:var(--ink); background:transparent; border:1px solid var(--line); } .section { padding:86px 0; } .section.alt { background:#eef2f0; } .section-heading { max-width:760px; margin-bottom:30px; } .metrics-grid { display:grid; grid-template-columns:repeat(5,1fr); border-top:1px solid var(--line); border-bottom:1px solid var(--line); } .metric { padding:25px 18px 24px 0; border-right:1px solid var(--line); margin-right:18px; } .metric:last-child { border-right:0; } .metric strong { display:block; font-size:2.25rem; letter-spacing:-.06em; } .metric span,.metric small { display:block; } .metric span { font-weight:700; } .metric small,.muted { color:var(--muted); font-size:.88rem; } .split { display:grid; grid-template-columns:1fr 1fr; gap:70px; align-items:start; } .check-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; } .check-grid div,.skill,.provider-grid div { padding:15px; background:var(--panel); border:1px solid var(--line); } .provider-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:34px; } .provider-grid strong,.provider-grid span { display:block; } .provider-grid span { color:var(--muted); margin-top:4px; } .flow { display:flex; align-items:center; gap:12px; overflow-x:auto; padding:20px 0 16px; } .flow div { flex:1; min-width:128px; padding:18px 12px; text-align:center; background:var(--dark); color:#fff; border-radius:4px; font-weight:700; line-height:1.25; } .flow i { color:var(--accent); font-style:normal; font-size:1.3rem; } .role-row { display:flex; flex-wrap:wrap; gap:8px; } .role-row span,.tag { display:inline-block; padding:4px 9px; border:1px solid var(--line); border-radius:999px; color:var(--muted); font-size:.75rem; font-weight:700; } .case-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; } .case-card { background:var(--panel); border:1px solid var(--line); padding:25px; display:flex; flex-direction:column; min-height:260px; } .case-card h3 { margin-bottom:10px; } .case-card .text-link { margin-top:auto; font-weight:750; text-decoration:none; } .tag-row { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 20px; } .tag.verified { color:#0a5e46; background:var(--accent-soft); border-color:#afd9cc; } .architecture { display:grid; gap:7px; max-width:440px; } .architecture span { padding:11px 15px; border:1px solid var(--line); background:var(--panel); } .architecture b { color:var(--accent); text-align:center; } .page-head,.case-hero { padding:82px 0 50px; } .page-head h1,.case-hero h1 { font-size:clamp(2.5rem, 6vw, 4.8rem); } .case-hero { border-bottom:1px solid var(--line); } .case-layout { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:70px; } .case-layout h2 { margin-top:42px; } .case-layout h2:first-child { margin-top:0; } .case-layout h3 { margin-top:28px; margin-bottom:8px; font-size:1rem; letter-spacing:0; } .facts { display:grid; grid-template-columns:180px 1fr; border-top:1px solid var(--line); } .facts dt,.facts dd { padding:12px 0; border-bottom:1px solid var(--line); margin:0; } .facts dt { color:var(--muted); font-weight:700; } .table-wrap { overflow-x:auto; } table { width:100%; border-collapse:collapse; } th,td { text-align:left; padding:12px 14px; border:1px solid var(--line); vertical-align:top; } th { width:220px; background:#eef2f0; } .case-aside { position:sticky; top:20px; align-self:start; } .aside-card { padding:22px; background:var(--panel); border:1px solid var(--line); margin-bottom:16px; } .aside-card ul { padding-left:20px; } .disclaimer { border-top:4px solid var(--accent); font-size:.9rem; } .prose { max-width:820px; } .prose h2 { margin-top:42px; } .prose h2:first-child { margin-top:0; } .skill-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:28px; } .skill { font-weight:700; } .footer { border-top:1px solid var(--line); padding:35px 0 55px; color:var(--muted); font-size:.84rem; } @media (max-width:800px) { .nav { align-items:flex-start; padding:18px 0; flex-direction:column; } .nav-links { justify-content:flex-start; gap:12px; } .hero,.split,.case-layout { grid-template-columns:1fr; gap:35px; } .hero { padding:65px 0 55px; } .metrics-grid { grid-template-columns:repeat(2,1fr); } .metric { border-bottom:1px solid var(--line); } .provider-grid,.case-grid { grid-template-columns:1fr; } .case-aside { position:static; } .skill-grid { grid-template-columns:1fr 1fr; } } @media print { .nav-links,.button-row,.footer { display:none; } body { background:#fff; } .section,.page-head,.case-hero { padding:28px 0; } a { color:inherit; text-decoration:none; } }
