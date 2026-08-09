@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-09T11:42:47Z",
+  "generated_at": "2026-08-09T11:56:15Z",
   "portfolio_title": "On-Chain Investigation & Threat Intelligence Portfolio",
   "owner_name": "[YOUR NAME]",
   "owner_email": "[YOUR PUBLIC EMAIL]",
@@ -20,8 +20,8 @@
   },
   "providers": {
     "Etherscan V2": 6,
-    "bsc_official_json_rpc": 2,
-    "SOLANA_VALIDATOR_NOT_CONFIGURED": 1
+    "Official BNB Smart Chain read-only JSON-RPC": 2,
+    "Solana — not included in the current independently validated scope": 1
   },
   "cases": [
     {
@@ -32,11 +32,12 @@
       "attack_type": "TOKEN_LOGIC_PRICE_MANIPULATION_EXPLOIT",
       "source": {
         "name": "CertiK official incident analysis",
+        "publisher": "CertiK",
         "source_title": "Movie Token Incident Analysis - CertiK",
         "source_url": "https://www.certik.com/blog/movie-token-incident-analysis",
         "url": "https://www.certik.com/blog/movie-token-incident-analysis",
         "publication_date": "2026-03-19",
-        "retrieved_at": "2026-08-09T11:38:58Z"
+        "retrieved_at": "2026-08-09T11:54:17Z"
       },
       "primary_attacker": "0xDB0901A3254f47c0CE57fFFCE2C730Bc33A1c0e1",
       "primary_attacker_address": "0xDB0901A3254f47c0CE57fFFCE2C730Bc33A1c0e1",
@@ -59,8 +60,7 @@
       "wallet_explorer_url": "https://bscscan.com/address/0xDB0901A3254f47c0CE57fFFCE2C730Bc33A1c0e1",
       "transaction_explorer_url": "https://bscscan.com/tx/0xb8127c3c65e915dffde8ce725b247e5b04e2e19d137e67c51d79eb625c1f55c9",
       "validation": {
-        "provider": "bsc_official_json_rpc",
-        "provider_raw": "bsc_official_json_rpc",
+        "provider": "Official BNB Smart Chain read-only JSON-RPC",
         "status": "VERIFIED",
         "validated_chain": "bsc",
         "block_number": 85677867,
@@ -76,8 +76,9 @@
           "ATTACKER_IS_FROM"
         ]
       },
-      "technical_summary": "On 10 March 2026, the Movie Token (MT) contract was exploited for approximately $242,000 because its sell logic double-counted tokens sent to the liquidity pair and to pendingBurnAmount. The later burn created an artificial supply shock, distorted the MT price, and enabled the attacker to drain value from the pool.",
+      "technical_summary": "According to CertiK's Incident Analysis, the Movie Token (MT) contract was exploited on 10 March 2026 for approximately $242,000 after a double-counting flaw in its sell logic credited the same tokens to both the liquidity pair and pendingBurnAmount. A later burn caused an artificial supply shock and distorted the MT price, allowing value to be drained from the pool.",
       "fund_flow": [],
+      "source_fund_flow_claims": [],
       "unverified_fund_flow_notes": [],
       "loss_amount": "approximately $242,000",
       "confidence": {
@@ -110,20 +111,30 @@
       "attack_type": "INTEGER_OVERFLOW_TOKEN_MINTING_EXPLOIT",
       "source": {
         "name": "CertiK official incident analysis",
+        "publisher": "CertiK",
         "source_title": "Truebit Incident Analysis - CertiK",
         "source_url": "https://www.certik.com/blog/truebit-incident-analysis",
         "url": "https://www.certik.com/blog/truebit-incident-analysis",
         "publication_date": "2026-01-08",
-        "retrieved_at": "2026-08-09T11:38:58Z"
+        "retrieved_at": "2026-08-09T11:54:17Z"
       },
       "primary_attacker": "0x6C8EC8f14bE7C01672d31CFa5f2CEfeAB2562b50",
       "primary_attacker_address": "0x6C8EC8f14bE7C01672d31CFa5f2CEfeAB2562b50",
       "source_attributed_exploiter_addresses": [
-        "0x6C8EC8f14bE7C01672d31CFa5f2CEfeAB2562b50"
+        "0x6C8EC8f14bE7C01672d31CFa5f2CEfeAB2562b50",
+        "0xc0454E545a7A715c6D3627f77bEd376a05182FBc"
       ],
-      "downstream_fund_flow_addresses": [],
-      "unknown_control_addresses": [],
-      "related_attacker_addresses": [],
+      "downstream_fund_flow_addresses": [
+        "0xD12f6E0fa7FBF4e3A1c7996E3F0Dd26AB9031a60",
+        "0x273589ca3713e7becf42069f9fb3f0c164ce850a"
+      ],
+      "unknown_control_addresses": [
+        "0xD12f6E0fa7FBF4e3A1c7996E3F0Dd26AB9031a60",
+        "0x273589ca3713e7becf42069f9fb3f0c164ce850a"
+      ],
+      "related_attacker_addresses": [
+        "0xc0454E545a7A715c6D3627f77bEd376a05182FBc"
+      ],
       "malicious_contracts": [
         "0x1De399967B206e446B4E9AeEb3Cb0A0991bF11b8"
       ],
@@ -135,7 +146,6 @@
       "transaction_explorer_url": "https://etherscan.io/tx/0xcd4755645595094a8ab984d0db7e3b4aabde72a5c87c4f176a030629c47fb014",
       "validation": {
         "provider": "Etherscan V2",
-        "provider_raw": "etherscan_v2_validator",
         "status": "VERIFIED",
         "validated_chain": "ethereum",
         "block_number": 24191019,
@@ -154,9 +164,65 @@
           "ATTACKER_INTERACTED_WITH_CONTRACT"
         ]
       },
-      "technical_summary": "On 8 January 2026, Truebit was exploited for approximately $26.6M through an integer-overflow vulnerability in pre-0.8 Solidity arithmetic. The reported exploiter used the overflow to mint TRU for zero ETH and swap the minted tokens for ETH; the bounded public case validates the first source-attributed exploiter and its referenced transaction.",
+      "technical_summary": "According to CertiK's Incident Analysis, Truebit was exploited on 8 January 2026 for approximately $26.6M through an integer-overflow vulnerability in pre-0.8 Solidity arithmetic. Exploiter 1 used the flawed calculation to mint TRU for zero ETH and swap the minted tokens for ETH; this public case separately records the source's second exploiter and downstream fund-flow claims.",
       "fund_flow": [],
-      "unverified_fund_flow_notes": [],
+      "source_fund_flow_claims": [
+        {
+          "label": "Exploiter 1 to downstream wallet",
+          "from": "0x6C8EC8f14bE7C01672d31CFa5f2CEfeAB2562b50",
+          "to": "0xD12f6E0fa7FBF4e3A1c7996E3F0Dd26AB9031a60",
+          "chain": "ethereum",
+          "asset": "ETH",
+          "amount": "4,267.09 ETH",
+          "tx_hash": null,
+          "block": null,
+          "timestamp": null,
+          "evidence_status": "SOURCE_ATTRIBUTED_ONLY",
+          "source_attribution_status": "CERTIK_REPORTED_FUND_SPLIT; ON_CHAIN_HOP_NOT_REPRODUCED",
+          "evidence_urls": [
+            "https://www.certik.com/blog/truebit-incident-analysis",
+            "https://etherscan.io/address/0xD12f6E0fa7FBF4e3A1c7996E3F0Dd26AB9031a60"
+          ]
+        },
+        {
+          "label": "Exploiter 1 to downstream wallet",
+          "from": "0x6C8EC8f14bE7C01672d31CFa5f2CEfeAB2562b50",
+          "to": "0x273589ca3713e7becf42069f9fb3f0c164ce850a",
+          "chain": "ethereum",
+          "asset": "ETH",
+          "amount": "4,001.0004637 ETH",
+          "tx_hash": null,
+          "block": null,
+          "timestamp": null,
+          "evidence_status": "SOURCE_ATTRIBUTED_ONLY",
+          "source_attribution_status": "CERTIK_REPORTED_FUND_SPLIT; ON_CHAIN_HOP_NOT_REPRODUCED",
+          "evidence_urls": [
+            "https://www.certik.com/blog/truebit-incident-analysis",
+            "https://etherscan.io/address/0x273589ca3713e7becf42069f9fb3f0c164ce850a"
+          ]
+        },
+        {
+          "label": "Exploiter 2 to Tornado Cash endpoint",
+          "from": "0xc0454E545a7A715c6D3627f77bEd376a05182FBc",
+          "to": "Tornado Cash endpoint",
+          "chain": "ethereum",
+          "asset": "ETH",
+          "amount": "approximately 71.03 ETH (CertiK-reported aggregate)",
+          "tx_hash": null,
+          "block": null,
+          "timestamp": null,
+          "evidence_status": "SOURCE_ATTRIBUTED_ONLY",
+          "source_attribution_status": "CERTIK_REPORTED_TORNADO_CASH_TRANSFER; EXACT_TX_AND_AGGREGATE_NOT_RECONCILED",
+          "evidence_urls": [
+            "https://www.certik.com/blog/truebit-incident-analysis",
+            "https://etherscan.io/address/0xc0454E545a7A715c6D3627f77bEd376a05182FBc"
+          ]
+        }
+      ],
+      "unverified_fund_flow_notes": [
+        "CertiK reports the two downstream wallets and an approximately 71.03 ETH transfer to Tornado Cash. Public Etherscan address evidence shows multiple Tornado Cash Router deposits from Exploiter 2, but this bounded review did not obtain a V2 API response or reconcile those rows to the source aggregate, so no exact TX is promoted to VERIFIED.",
+        "Tornado Cash is described as a mixer or endpoint only; no sanctions classification is made here."
+      ],
       "loss_amount": "approximately $26.6M",
       "confidence": {
         "verified_fact": [
@@ -188,11 +254,12 @@
       "attack_type": "SIGNATURE_VERIFICATION_AUTHORIZATION_BYPASS",
       "source": {
         "name": "CertiK official incident analysis",
+        "publisher": "CertiK",
         "source_title": "GnosisPay Incident Analysis - CertiK",
         "source_url": "https://www.certik.com/blog/gnosispay-incident-analysis",
         "url": "https://www.certik.com/blog/gnosispay-incident-analysis",
         "publication_date": "2026-06-04",
-        "retrieved_at": "2026-08-09T11:38:58Z"
+        "retrieved_at": "2026-08-09T11:54:17Z"
       },
       "primary_attacker": "0x81BA8A2b895D30280bca199C2Ff75f3F058d4C6c",
       "primary_attacker_address": "0x81BA8A2b895D30280bca199C2Ff75f3F058d4C6c",
@@ -230,7 +297,6 @@
       "transaction_explorer_url": "https://gnosisscan.io/tx/0x61af4383f94423f4acad8d4a04d3d473f258be3806f3e55d2f18b7fcc475e580",
       "validation": {
         "provider": "Etherscan V2",
-        "provider_raw": "etherscan_v2_validator",
         "status": "VERIFIED",
         "validated_chain": "gnosis",
         "block_number": 46468498,
@@ -246,7 +312,7 @@
           "ATTACKER_IS_FROM"
         ]
       },
-      "technical_summary": "On 1 June 2026, an attacker drained dozens of GnosisPay Safes after a signature-verification flaw in the GnosisPay Delay module accepted attacker-crafted nested signature data. The crafted verification path reached attacker-prepared EIP-1271 contracts that returned the expected magic value, allowing queued transactions to transfer EURe and GNO from victim Safes.",
+      "technical_summary": "According to CertiK's Incident Analysis, an attacker drained dozens of GnosisPay Safes on 1 June 2026 by exploiting signature verification in the GnosisPay Delay module. Crafted nested signature data reached attacker-prepared EIP-1271 contracts that returned the expected magic value, so queued transactions transferred EURe and GNO from victim Safes.",
       "fund_flow": [
         {
           "hop": 1,
@@ -266,6 +332,7 @@
           ]
         }
       ],
+      "source_fund_flow_claims": [],
       "unverified_fund_flow_notes": [
         "CertiK describes subsequent routing through LI.FI/Relay and an XMR split, but those downstream hops are not independently reproduced by the bounded local validator and remain UNVERIFIED in this portfolio."
       ],

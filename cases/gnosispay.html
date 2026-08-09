@@ -25,9 +25,9 @@
       <article>
         <h2>Executive summary</h2>
         <dl class="facts"><dt>Project</dt><dd>GnosisPay</dd><dt>Incident date</dt><dd>2026-06-01</dd><dt>Chain</dt><dd>gnosis</dd><dt>Attack type</dt><dd>Signature Verification Authorization Bypass</dd><dt>Investigation scope</dt><dd>Source attribution and exact referenced transaction validation</dd><dt>Validation status</dt><dd>VERIFIED</dd></dl>
-        <p>On 1 June 2026, an attacker drained dozens of GnosisPay Safes after a signature-verification flaw in the GnosisPay Delay module accepted attacker-crafted nested signature data. The crafted verification path reached attacker-prepared EIP-1271 contracts that returned the expected magic value, allowing queued transactions to transfer EURe and GNO from victim Safes.</p>
+        <p>According to CertiK&#x27;s Incident Analysis, an attacker drained dozens of GnosisPay Safes on 1 June 2026 by exploiting signature verification in the GnosisPay Delay module. Crafted nested signature data reached attacker-prepared EIP-1271 contracts that returned the expected magic value, so queued transactions transferred EURe and GNO from victim Safes.</p>
         <h2>Source provenance</h2>
-        <p><strong>GnosisPay Incident Analysis - CertiK</strong></p><p>Publication date: 2026-06-04</p><p>Retrieved date: 2026-08-09T11:38:58Z</p><p><a href="https://www.certik.com/blog/gnosispay-incident-analysis" rel="noreferrer noopener">https://www.certik.com/blog/gnosispay-incident-analysis</a></p>
+        <p><strong>GnosisPay Incident Analysis - CertiK</strong></p><p>Publisher: CertiK</p><p>Publication date: 2026-06-04</p><p>Retrieved at: 2026-08-09T11:54:17Z</p><p><a href="https://www.certik.com/blog/gnosispay-incident-analysis" rel="noreferrer noopener">https://www.certik.com/blog/gnosispay-incident-analysis</a></p>
         <h2>Primary IOC</h2>
         <dl class="facts"><dt>Primary attacker address</dt><dd><code>0x81BA8A2b895D30280bca199C2Ff75f3F058d4C6c</code></dd><dt>Primary transaction</dt><dd><code>0x61af4383f94423f4acad8d4a04d3d473f258be3806f3e55d2f18b7fcc475e580</code></dd><dt>Malicious contract</dt><dd><p class="muted">None recorded.</p></dd></dl>
         <h2>Independent on-chain validation</h2>

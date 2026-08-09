@@ -80,6 +80,7 @@ def case_card(case: dict[str, Any]) -> str:
       <div class="eyebrow">{esc(case.get('chain'))} · {esc(case.get('incident_date'))}</div>
       <h3>{esc(case.get('project'))}</h3>
       <p>{esc(case.get('attack_type')).replace('_', ' ').title()} with a source-attributed attacker address and exact transaction reproduced on-chain.</p>
+      <p class="muted">{esc(case.get('technical_summary'))}</p>
       <div class="tag-row"><span class="tag verified">{esc(validation.get('status'))}</span><span class="tag">{esc(validation.get('provider'))}</span></div>
       <a class="text-link" href="cases/{esc(case.get('slug'))}.html">Read case study →</a>
     </article>
@@ -202,6 +203,33 @@ def build_case_v2(case: dict[str, Any]) -> str:
         role_group("Unknown control addresses", case.get("unknown_control_addresses"), "Control remains unverified in this bounded package."),
     ])
 
+    source_claim_rows = []
+    for item in case.get("source_fund_flow_claims") or []:
+        source_claim_rows.append(
+            "<tr>"
+            f"<td>{esc(item.get('label'))}</td>"
+            f"<td><code>{esc(item.get('from'))}</code></td>"
+            f"<td><code>{esc(item.get('to'))}</code></td>"
+            f"<td><code>{esc(item.get('tx_hash'))}</code></td>"
+            f"<td>{esc(item.get('chain'))}</td>"
+            f"<td>{esc(item.get('asset'))} {esc(item.get('amount'))}</td>"
+            f"<td>{esc(item.get('block'))}</td>"
+            f"<td>{esc(item.get('timestamp'))}</td>"
+            f"<td>{esc(item.get('evidence_status'))}</td>"
+            f"<td>{esc(item.get('source_attribution_status'))}</td>"
+            f"<td>{' '.join(link(url, 'evidence') for url in item.get('evidence_urls') or [])}</td>"
+            "</tr>"
+        )
+    source_claim_section = ""
+    if source_claim_rows:
+        source_claim_section = (
+            '<h3>Source-reported fund flow — not independently verified</h3>'
+            '<p>These claims are preserved from the authoritative source. Missing TX, block, or timestamp values remain unknown; no exact hop is presented as reproduced.</p>'
+            '<div class="table-wrap"><table><thead><tr><th>Flow</th><th>From</th><th>To</th><th>TX hash</th><th>Chain</th><th>Asset / amount</th><th>Block</th><th>Timestamp</th><th>Evidence status</th><th>Attribution status</th><th>Sources</th></tr></thead><tbody>'
+            + "".join(source_claim_rows)
+            + "</tbody></table></div>"
+        )
+
     flow_rows = []
     for item in case.get("fund_flow") or []:
         destination = esc(item.get("to"))
@@ -221,7 +249,7 @@ def build_case_v2(case: dict[str, Any]) -> str:
             "</tr>"
         )
     fund_flow_section = ""
-    if flow_rows or case.get("unverified_fund_flow_notes"):
+    if flow_rows or source_claim_section or case.get("unverified_fund_flow_notes"):
         fund_flow_table = ""
         if flow_rows:
             fund_flow_table = (
@@ -233,6 +261,7 @@ def build_case_v2(case: dict[str, Any]) -> str:
             '<h2>Fund-flow extension</h2>'
             '<p>Only hops with a preserved transaction reference and read-only explorer evidence are listed as verified. Downstream control is not inferred from address proximity.</p>'
             + fund_flow_table
+            + source_claim_section
             + bullets(case.get("unverified_fund_flow_notes"))
         )
 
@@ -246,7 +275,7 @@ def build_case_v2(case: dict[str, Any]) -> str:
         <dl class="facts"><dt>Project</dt><dd>{esc(case.get('project'))}</dd><dt>Incident date</dt><dd>{esc(case.get('incident_date'))}</dd><dt>Chain</dt><dd>{esc(case.get('chain'))}</dd><dt>Attack type</dt><dd>{attack_label}</dd><dt>Investigation scope</dt><dd>Source attribution and exact referenced transaction validation</dd><dt>Validation status</dt><dd>{esc(validation.get('status'))}</dd></dl>
         <p>{esc(case.get('technical_summary'))}</p>
         <h2>Source provenance</h2>
-        <p><strong>{esc(source.get('source_title') or source.get('name'))}</strong></p><p>Publication date: {esc(source.get('publication_date') or 'Not separately preserved')}</p><p>Retrieved date: {esc(source.get('retrieved_at') or 'Not separately preserved')}</p><p>{link(source.get('source_url') or source.get('url'), source.get('source_url') or source.get('url') or 'Source URL not preserved')}</p>
+        <p><strong>{esc(source.get('source_title') or source.get('name'))}</strong></p><p>Publisher: {esc(source.get('publisher') or source.get('name') or 'UNKNOWN')}</p><p>Publication date: {esc(source.get('publication_date') or 'Not separately preserved')}</p><p>Retrieved at: {esc(source.get('retrieved_at') or 'Not separately preserved')}</p><p>{link(source.get('source_url') or source.get('url'), source.get('source_url') or source.get('url') or 'Source URL not preserved')}</p>
         <h2>Primary IOC</h2>
         <dl class="facts"><dt>Primary attacker address</dt><dd><code>{esc(case.get('primary_attacker_address') or case.get('primary_attacker'))}</code></dd><dt>Primary transaction</dt><dd><code>{esc(case.get('primary_transaction'))}</code></dd><dt>Malicious contract</dt><dd>{bullets(case.get('malicious_contracts'))}</dd></dl>
         <h2>Independent on-chain validation</h2>

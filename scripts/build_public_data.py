@@ -24,29 +24,101 @@ PREFERRED_CASES = ["Movie Token", "Truebit", "GnosisPay"]
 CASE_FACTS: dict[str, dict[str, Any]] = {
     "movie token": {
         "source_title": "Movie Token Incident Analysis - CertiK",
+        "source_url": "https://www.certik.com/blog/movie-token-incident-analysis",
         "publication_date": "2026-03-19",
         "attack_type": "TOKEN_LOGIC_PRICE_MANIPULATION_EXPLOIT",
         "technical_summary": (
-            "On 10 March 2026, the Movie Token (MT) contract was exploited for approximately $242,000 because its sell logic double-counted tokens sent to the liquidity pair and to pendingBurnAmount. "
-            "The later burn created an artificial supply shock, distorted the MT price, and enabled the attacker to drain value from the pool."
+            "According to CertiK's Incident Analysis, the Movie Token (MT) contract was exploited on 10 March 2026 for approximately $242,000 after a double-counting flaw in its sell logic credited the same tokens to both the liquidity pair and pendingBurnAmount. "
+            "A later burn caused an artificial supply shock and distorted the MT price, allowing value to be drained from the pool."
         ),
     },
     "truebit": {
         "source_title": "Truebit Incident Analysis - CertiK",
+        "source_url": "https://www.certik.com/blog/truebit-incident-analysis",
         "publication_date": "2026-01-08",
         "attack_type": "INTEGER_OVERFLOW_TOKEN_MINTING_EXPLOIT",
         "technical_summary": (
-            "On 8 January 2026, Truebit was exploited for approximately $26.6M through an integer-overflow vulnerability in pre-0.8 Solidity arithmetic. "
-            "The reported exploiter used the overflow to mint TRU for zero ETH and swap the minted tokens for ETH; the bounded public case validates the first source-attributed exploiter and its referenced transaction."
+            "According to CertiK's Incident Analysis, Truebit was exploited on 8 January 2026 for approximately $26.6M through an integer-overflow vulnerability in pre-0.8 Solidity arithmetic. "
+            "Exploiter 1 used the flawed calculation to mint TRU for zero ETH and swap the minted tokens for ETH; this public case separately records the source's second exploiter and downstream fund-flow claims."
         ),
+        "source_attributed_exploiter_addresses": [
+            "0x6C8EC8f14bE7C01672d31CFa5f2CEfeAB2562b50",
+            "0xc0454E545a7A715c6D3627f77bEd376a05182FBc",
+        ],
+        "downstream_fund_flow_addresses": [
+            "0xD12f6E0fa7FBF4e3A1c7996E3F0Dd26AB9031a60",
+            "0x273589ca3713e7becf42069f9fb3f0c164ce850a",
+        ],
+        "unknown_control_addresses": [
+            "0xD12f6E0fa7FBF4e3A1c7996E3F0Dd26AB9031a60",
+            "0x273589ca3713e7becf42069f9fb3f0c164ce850a",
+        ],
+        "source_fund_flow_claims": [
+            {
+                "label": "Exploiter 1 to downstream wallet",
+                "from": "0x6C8EC8f14bE7C01672d31CFa5f2CEfeAB2562b50",
+                "to": "0xD12f6E0fa7FBF4e3A1c7996E3F0Dd26AB9031a60",
+                "chain": "ethereum",
+                "asset": "ETH",
+                "amount": "4,267.09 ETH",
+                "tx_hash": None,
+                "block": None,
+                "timestamp": None,
+                "evidence_status": "SOURCE_ATTRIBUTED_ONLY",
+                "source_attribution_status": "CERTIK_REPORTED_FUND_SPLIT; ON_CHAIN_HOP_NOT_REPRODUCED",
+                "evidence_urls": [
+                    "https://www.certik.com/blog/truebit-incident-analysis",
+                    "https://etherscan.io/address/0xD12f6E0fa7FBF4e3A1c7996E3F0Dd26AB9031a60",
+                ],
+            },
+            {
+                "label": "Exploiter 1 to downstream wallet",
+                "from": "0x6C8EC8f14bE7C01672d31CFa5f2CEfeAB2562b50",
+                "to": "0x273589ca3713e7becf42069f9fb3f0c164ce850a",
+                "chain": "ethereum",
+                "asset": "ETH",
+                "amount": "4,001.0004637 ETH",
+                "tx_hash": None,
+                "block": None,
+                "timestamp": None,
+                "evidence_status": "SOURCE_ATTRIBUTED_ONLY",
+                "source_attribution_status": "CERTIK_REPORTED_FUND_SPLIT; ON_CHAIN_HOP_NOT_REPRODUCED",
+                "evidence_urls": [
+                    "https://www.certik.com/blog/truebit-incident-analysis",
+                    "https://etherscan.io/address/0x273589ca3713e7becf42069f9fb3f0c164ce850a",
+                ],
+            },
+            {
+                "label": "Exploiter 2 to Tornado Cash endpoint",
+                "from": "0xc0454E545a7A715c6D3627f77bEd376a05182FBc",
+                "to": "Tornado Cash endpoint",
+                "chain": "ethereum",
+                "asset": "ETH",
+                "amount": "approximately 71.03 ETH (CertiK-reported aggregate)",
+                "tx_hash": None,
+                "block": None,
+                "timestamp": None,
+                "evidence_status": "SOURCE_ATTRIBUTED_ONLY",
+                "source_attribution_status": "CERTIK_REPORTED_TORNADO_CASH_TRANSFER; EXACT_TX_AND_AGGREGATE_NOT_RECONCILED",
+                "evidence_urls": [
+                    "https://www.certik.com/blog/truebit-incident-analysis",
+                    "https://etherscan.io/address/0xc0454E545a7A715c6D3627f77bEd376a05182FBc",
+                ],
+            },
+        ],
+        "unverified_fund_flow_notes": [
+            "CertiK reports the two downstream wallets and an approximately 71.03 ETH transfer to Tornado Cash. Public Etherscan address evidence shows multiple Tornado Cash Router deposits from Exploiter 2, but this bounded review did not obtain a V2 API response or reconcile those rows to the source aggregate, so no exact TX is promoted to VERIFIED.",
+            "Tornado Cash is described as a mixer or endpoint only; no sanctions classification is made here.",
+        ],
     },
     "gnosispay": {
         "source_title": "GnosisPay Incident Analysis - CertiK",
+        "source_url": "https://www.certik.com/blog/gnosispay-incident-analysis",
         "publication_date": "2026-06-04",
         "attack_type": "SIGNATURE_VERIFICATION_AUTHORIZATION_BYPASS",
         "technical_summary": (
-            "On 1 June 2026, an attacker drained dozens of GnosisPay Safes after a signature-verification flaw in the GnosisPay Delay module accepted attacker-crafted nested signature data. "
-            "The crafted verification path reached attacker-prepared EIP-1271 contracts that returned the expected magic value, allowing queued transactions to transfer EURe and GNO from victim Safes."
+            "According to CertiK's Incident Analysis, an attacker drained dozens of GnosisPay Safes on 1 June 2026 by exploiting signature verification in the GnosisPay Delay module. "
+            "Crafted nested signature data reached attacker-prepared EIP-1271 contracts that returned the expected magic value, so queued transactions transferred EURe and GNO from victim Safes."
         ),
         "source_attributed_exploiter_addresses": [
             "0x81BA8A2b895D30280bca199C2Ff75f3F058d4C6c",
@@ -144,8 +216,10 @@ def provider_label(value: Any) -> str:
     source = text(value)
     if source == "etherscan_v2_validator":
         return "Etherscan V2"
-    if source == "bsc_rpc_validator":
+    if source in {"bsc_rpc_validator", "bsc_official_json_rpc"}:
         return "Official BNB Smart Chain read-only JSON-RPC"
+    if source == "SOLANA_VALIDATOR_NOT_CONFIGURED":
+        return "Solana — not included in the current independently validated scope"
     return source or "Not configured"
 
 
@@ -177,9 +251,10 @@ def public_case(incident: dict[str, Any], *, source_retrieved_at: str | None = N
         "attack_type": text(facts.get("attack_type")) or text(incident.get("attack_type")) or "OTHER_WEB3_THREAT",
         "source": {
             "name": "CertiK official incident analysis" if text(incident.get("source")) == "certik_official_incident_analysis" else text(incident.get("source")) or "UNKNOWN",
+            "publisher": "CertiK",
             "source_title": text(facts.get("source_title")) or None,
-            "source_url": source or None,
-            "url": source or None,
+            "source_url": text(facts.get("source_url")) or source or None,
+            "url": text(facts.get("source_url")) or source or None,
             "publication_date": facts.get("publication_date") or incident.get("publication_date") or None,
             "retrieved_at": source_retrieved_at or incident.get("source_retrieved_at") or incident.get("retrieved_at") or None,
         },
@@ -196,7 +271,6 @@ def public_case(incident: dict[str, Any], *, source_retrieved_at: str | None = N
         "transaction_explorer_url": tx_url,
         "validation": {
             "provider": provider_label(incident.get("validation_provider")),
-            "provider_raw": text(incident.get("validation_provider")) or None,
             "status": text(incident.get("onchain_validation_status")) or "NOT_CHECKED",
             "validated_chain": text(incident.get("validated_chain")) or chain,
             "block_number": incident.get("block_number"),
@@ -210,6 +284,7 @@ def public_case(incident: dict[str, Any], *, source_retrieved_at: str | None = N
         },
         "technical_summary": text(facts.get("technical_summary")) or text(incident.get("technical_description")) or "A technical summary was not preserved in the public dataset.",
         "fund_flow": facts.get("fund_flow") or [],
+        "source_fund_flow_claims": facts.get("source_fund_flow_claims") or [],
         "unverified_fund_flow_notes": unique(facts.get("unverified_fund_flow_notes")),
         "loss_amount": text(incident.get("loss_amount")) or None,
         "confidence": {
