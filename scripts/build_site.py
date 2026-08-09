@@ -212,7 +212,7 @@ def build_case_v2(case: dict[str, Any]) -> str:
             f"<td><code>{esc(item.get('to'))}</code></td>"
             f"<td><code>{esc(item.get('tx_hash'))}</code></td>"
             f"<td>{esc(item.get('chain'))}</td>"
-            f"<td>{esc(item.get('asset'))} {esc(item.get('amount'))}</td>"
+            f"<td>{esc(item.get('amount'))}</td>"
             f"<td>{esc(item.get('block'))}</td>"
             f"<td>{esc(item.get('timestamp'))}</td>"
             f"<td>{esc(item.get('evidence_status'))}</td>"
