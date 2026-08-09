@@ -17,6 +17,8 @@ The figures in `data/portfolio.json` are generated from a bounded local
 incident sample. They are not claims of universal accuracy or legal identity.
 Unsupported chains remain explicitly unverified.
 
+Latest local reliability check: **137 automated software tests passed**.
+
 ## Selected cases
 
 - Movie Token — BNB Smart Chain
@@ -36,7 +38,7 @@ The public dataset is generated from a private source DB at build time. The
 private DB itself is never copied into this repository:
 
 ```powershell
-python scripts/build_public_data.py --source-db PATH_TO_PRIVATE_DB --tests-passing TEST_COUNT
+python scripts/build_public_data.py --source-db PATH_TO_PRIVATE_DB --tests-passing TEST_COUNT --source-retrieved-at UTC_FETCH_TIMESTAMP
 python scripts/build_site.py
 ```
 

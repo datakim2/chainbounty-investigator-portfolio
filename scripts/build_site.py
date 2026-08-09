@@ -28,6 +28,13 @@ def bullets(values: Any, cls: str = "") -> str:
     return '<ul class="' + esc(cls) + '">' + "".join(f"<li>{esc(value)}</li>" for value in items) + "</ul>"
 
 
+def role_group(title: str, values: Any, note: str = "") -> str:
+    if not values:
+        return ""
+    suffix = f'<p class="muted">{esc(note)}</p>' if note else ""
+    return f"<h3>{esc(title)}</h3>{bullets(values)}{suffix}"
+
+
 def page(title: str, body: str, *, prefix: str = "") -> str:
     css = f"{prefix}styles.css"
     nav = f"""
@@ -140,7 +147,7 @@ def build_index(data: dict[str, Any]) -> str:
     </section>
 
     <section class="section alt"><div class="wrap split"><div><p class="eyebrow">About</p><h2>[YOUR NAME]</h2><p>I am a backend engineer with experience in regulated financial systems and a strong interest in blockchain security, threat intelligence, and reproducible digital investigations.</p><p>My approach combines software engineering discipline with evidence-first on-chain analysis.</p></div><div><p class="eyebrow">Contact</p><p>Email: <strong>[YOUR PUBLIC EMAIL]</strong></p><p>X: <strong>[YOUR X PROFILE]</strong></p><p class="muted">Contact details remain placeholders until explicitly supplied.</p></div></div></section>
-    <section class="section wrap"><div class="section-heading"><p class="eyebrow">Scope and limits</p><h2>Conservative attribution is a feature</h2><p>Public incident intelligence and on-chain relationships can support a technical lead. They do not replace off-chain evidence, lawful investigative process, or a court's determination.</p><p>Providers used in the bounded sample: {esc(', '.join(f'{key} ({value})' for key, value in providers.items()) or 'Recorded in the case studies')}.</p></div></section>
+    <section class="section wrap"><div class="section-heading"><p class="eyebrow">Scope and limits</p><h2>Conservative attribution is a feature</h2><p>Public incident intelligence and on-chain relationships can support a technical lead. They do not replace off-chain evidence, lawful investigative process, or a court's determination.</p><p>Providers used in the bounded sample: {esc(', '.join(f'{key} ({value})' for key, value in providers.items()) or 'Recorded in the case studies')}.</p><p><strong>{esc(metrics.get('tests_passing') or 'UNKNOWN')} automated software tests passed</strong> in the latest local validation run.</p></div></section>
     """
     return page("Home", body)
 
@@ -171,6 +178,84 @@ def build_case(case: dict[str, Any]) -> str:
         <p>{esc(case.get('technical_summary'))}</p>
         <h2>Related IOC</h2>{bullets(case.get('related_attacker_addresses'))}
         <h2>Confidence and limitations</h2><h3>Verified fact</h3>{bullets((case.get('confidence') or {}).get('verified_fact'))}<h3>Source-attributed</h3>{bullets((case.get('confidence') or {}).get('source_attributed'))}<h3>Unverified / unknown</h3>{bullets((case.get('confidence') or {}).get('unverified') + (case.get('confidence') or {}).get('unknown'))}<h3>Limitations</h3>{bullets(case.get('limitations'))}
+      </article>
+      <aside class="case-aside"><div class="aside-card"><p class="eyebrow">Explorer evidence</p><ul>{''.join(explorer_links)}</ul><p class="muted">Only official explorer and source URLs are linked. No malicious website is opened or promoted.</p></div><div class="aside-card disclaimer"><p class="eyebrow">Attribution disclaimer</p><p>Address attribution in this portfolio is based on publicly available incident intelligence and reproducible blockchain evidence. On-chain validation confirms transaction facts and address relationships; it does not constitute a legal determination of criminal liability. Final attribution may require additional off-chain evidence and lawful investigative process.</p></div></aside>
+    </section>
+    """
+    return page(f"{case.get('project')} case study", body, prefix="../")
+
+
+def build_case_v2(case: dict[str, Any]) -> str:
+    validation = case.get("validation") or {}
+    source = case.get("source") or {}
+    relations = validation.get("relationships") or []
+    attack_label = esc(case.get("attack_type")).replace("_", " ").title()
+    explorer_links = []
+    if case.get("wallet_explorer_url"):
+        explorer_links.append(f"<li>{link(case.get('wallet_explorer_url'), 'Wallet explorer')}</li>")
+    if case.get("transaction_explorer_url"):
+        explorer_links.append(f"<li>{link(case.get('transaction_explorer_url'), 'Transaction explorer')}</li>")
+
+    role_sections = "".join([
+        role_group("Source-attributed exploiter addresses", case.get("source_attributed_exploiter_addresses"), "The source explicitly associates these addresses with the incident narrative."),
+        role_group("Downstream fund-flow addresses", case.get("downstream_fund_flow_addresses"), "These addresses appear in the cited fund-flow narrative; appearance does not establish control."),
+        role_group("Unknown control addresses", case.get("unknown_control_addresses"), "Control remains unverified in this bounded package."),
+    ])
+
+    flow_rows = []
+    for item in case.get("fund_flow") or []:
+        destination = esc(item.get("to"))
+        if item.get("to_label"):
+            destination += f" — {esc(item.get('to_label'))}"
+        flow_rows.append(
+            "<tr>"
+            f"<td>{esc(item.get('hop'))}</td>"
+            f"<td><code>{esc(item.get('from'))}</code></td>"
+            f"<td><code>{destination}</code></td>"
+            f"<td><code>{esc(item.get('tx_hash'))}</code></td>"
+            f"<td>{esc(item.get('chain'))}</td>"
+            f"<td>{esc(item.get('asset'))} {esc(item.get('amount'))}</td>"
+            f"<td>{esc(item.get('timestamp'))}</td>"
+            f"<td>{esc(item.get('evidence_status'))}</td>"
+            f"<td>{esc(item.get('source_attribution_status'))}</td>"
+            "</tr>"
+        )
+    fund_flow_section = ""
+    if flow_rows or case.get("unverified_fund_flow_notes"):
+        fund_flow_table = ""
+        if flow_rows:
+            fund_flow_table = (
+                '<div class="table-wrap"><table><thead><tr><th>Hop</th><th>From</th><th>To</th><th>TX hash</th><th>Chain</th><th>Asset / amount</th><th>Timestamp</th><th>Evidence status</th><th>Source attribution status</th></tr></thead><tbody>'
+                + "".join(flow_rows)
+                + "</tbody></table></div>"
+            )
+        fund_flow_section = (
+            '<h2>Fund-flow extension</h2>'
+            '<p>Only hops with a preserved transaction reference and read-only explorer evidence are listed as verified. Downstream control is not inferred from address proximity.</p>'
+            + fund_flow_table
+            + bullets(case.get("unverified_fund_flow_notes"))
+        )
+
+    confidence = case.get("confidence") or {}
+    uncertain = (confidence.get("unverified") or []) + (confidence.get("unknown") or [])
+    body = f"""
+    <section class="case-hero wrap"><p class="eyebrow">Case study &middot; {esc(case.get('chain'))} &middot; {esc(case.get('incident_date'))}</p><h1>{esc(case.get('project'))}</h1><p class="lead">{attack_label} &mdash; source-attributed attacker address with exact on-chain relationship reproduced.</p><span class="tag verified">{esc(validation.get('status'))}</span></section>
+    <section class="section wrap case-layout">
+      <article>
+        <h2>Executive summary</h2>
+        <dl class="facts"><dt>Project</dt><dd>{esc(case.get('project'))}</dd><dt>Incident date</dt><dd>{esc(case.get('incident_date'))}</dd><dt>Chain</dt><dd>{esc(case.get('chain'))}</dd><dt>Attack type</dt><dd>{attack_label}</dd><dt>Investigation scope</dt><dd>Source attribution and exact referenced transaction validation</dd><dt>Validation status</dt><dd>{esc(validation.get('status'))}</dd></dl>
+        <p>{esc(case.get('technical_summary'))}</p>
+        <h2>Source provenance</h2>
+        <p><strong>{esc(source.get('source_title') or source.get('name'))}</strong></p><p>Publication date: {esc(source.get('publication_date') or 'Not separately preserved')}</p><p>Retrieved date: {esc(source.get('retrieved_at') or 'Not separately preserved')}</p><p>{link(source.get('source_url') or source.get('url'), source.get('source_url') or source.get('url') or 'Source URL not preserved')}</p>
+        <h2>Primary IOC</h2>
+        <dl class="facts"><dt>Primary attacker address</dt><dd><code>{esc(case.get('primary_attacker_address') or case.get('primary_attacker'))}</code></dd><dt>Primary transaction</dt><dd><code>{esc(case.get('primary_transaction'))}</code></dd><dt>Malicious contract</dt><dd>{bullets(case.get('malicious_contracts'))}</dd></dl>
+        <h2>Independent on-chain validation</h2>
+        <div class="table-wrap"><table><tbody><tr><th>Provider</th><td>{esc(validation.get('provider'))}</td></tr><tr><th>Chain</th><td>{esc(validation.get('validated_chain'))}</td></tr><tr><th>Block</th><td>{esc(validation.get('block_number'))}</td></tr><tr><th>Timestamp</th><td>{esc(validation.get('block_timestamp'))}</td></tr><tr><th>From</th><td><code>{esc(validation.get('from'))}</code></td></tr><tr><th>To</th><td><code>{esc(validation.get('to'))}</code></td></tr><tr><th>Receipt</th><td>{esc(validation.get('receipt_status'))}</td></tr><tr><th>Attacker relationship</th><td>{esc(', '.join(relations) or 'UNKNOWN')}</td></tr></tbody></table></div>
+        <h2>Why the relationship matters</h2>
+        <p>The cited source attributes the primary address to the incident. Read-only validation independently reproduced the exact referenced transaction on the stated chain and matched the recorded relationship: <strong>{esc(', '.join(relations) or 'no relationship recorded')}</strong>.</p>
+        <h2>Address-role classification</h2>{role_sections}
+{fund_flow_section}
+        <h2>Confidence and limitations</h2><h3>Verified fact</h3>{bullets(confidence.get('verified_fact'))}<h3>Source-attributed</h3>{bullets(confidence.get('source_attributed'))}<h3>Unverified / unknown</h3>{bullets(uncertain)}<h3>Limitations</h3>{bullets(case.get('limitations'))}
       </article>
       <aside class="case-aside"><div class="aside-card"><p class="eyebrow">Explorer evidence</p><ul>{''.join(explorer_links)}</ul><p class="muted">Only official explorer and source URLs are linked. No malicious website is opened or promoted.</p></div><div class="aside-card disclaimer"><p class="eyebrow">Attribution disclaimer</p><p>Address attribution in this portfolio is based on publicly available incident intelligence and reproducible blockchain evidence. On-chain validation confirms transaction facts and address relationships; it does not constitute a legal determination of criminal liability. Final attribution may require additional off-chain evidence and lawful investigative process.</p></div></aside>
     </section>
@@ -218,7 +303,7 @@ def write_site(data_path: Path, root: Path) -> dict[str, Any]:
     (root / "evidence-integrity.html").write_text(build_integrity(), encoding="utf-8")
     (root / "skills.html").write_text(build_skills(), encoding="utf-8")
     for case in data.get("cases") or []:
-        (root / "cases" / f"{case['slug']}.html").write_text(build_case(case), encoding="utf-8")
+        (root / "cases" / f"{case['slug']}.html").write_text(build_case_v2(case), encoding="utf-8")
     css = """/* Local, dependency-free styles for the public portfolio. */
 :root { --ink:#16202a; --muted:#5b6875; --line:#d9e0e6; --paper:#f7f8f6; --panel:#ffffff; --accent:#0e6b62; --accent-soft:#e3f1ed; --dark:#10252b; --max:1120px; }
 * { box-sizing:border-box; } html { scroll-behavior:smooth; } body { margin:0; color:var(--ink); background:var(--paper); font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height:1.65; } a { color:var(--accent); } code { font-family:ui-monospace, SFMono-Regular, Consolas, monospace; font-size:.9em; overflow-wrap:anywhere; } .wrap { width:min(calc(100% - 40px), var(--max)); margin-inline:auto; } .nav { min-height:72px; display:flex; align-items:center; justify-content:space-between; gap:24px; border-bottom:1px solid var(--line); } .brand { color:var(--ink); font-weight:750; text-decoration:none; letter-spacing:-.02em; } .brand span { color:var(--muted); font-weight:500; } .nav-links { display:flex; gap:20px; flex-wrap:wrap; justify-content:flex-end; } .nav-links a { color:var(--muted); text-decoration:none; font-size:.92rem; } .nav-links a:hover { color:var(--ink); } .hero { display:grid; grid-template-columns:1.5fr .75fr; gap:72px; padding:96px 0 82px; align-items:end; } h1,h2,h3 { line-height:1.15; letter-spacing:-.035em; margin:0 0 18px; } h1 { font-size:clamp(2.8rem, 7vw, 5.7rem); max-width:900px; } h2 { font-size:clamp(1.75rem, 3vw, 2.5rem); } h3 { font-size:1.15rem; } p { margin:0 0 18px; } .lead { font-size:clamp(1.2rem, 2.3vw, 1.55rem); color:#33434d; max-width:780px; } .eyebrow { color:var(--accent); font-size:.74rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; margin-bottom:14px; } .hero-note { border-left:4px solid var(--accent); padding:20px 0 12px 24px; font-size:1.08rem; } .button-row { display:flex; gap:12px; flex-wrap:wrap; margin-top:30px; } .button { display:inline-block; padding:11px 17px; border-radius:5px; color:#fff; background:var(--accent); text-decoration:none; font-weight:700; } .button.secondary { color:var(--ink); background:transparent; border:1px solid var(--line); } .section { padding:86px 0; } .section.alt { background:#eef2f0; } .section-heading { max-width:760px; margin-bottom:30px; } .metrics-grid { display:grid; grid-template-columns:repeat(5,1fr); border-top:1px solid var(--line); border-bottom:1px solid var(--line); } .metric { padding:25px 18px 24px 0; border-right:1px solid var(--line); margin-right:18px; } .metric:last-child { border-right:0; } .metric strong { display:block; font-size:2.25rem; letter-spacing:-.06em; } .metric span,.metric small { display:block; } .metric span { font-weight:700; } .metric small,.muted { color:var(--muted); font-size:.88rem; } .split { display:grid; grid-template-columns:1fr 1fr; gap:70px; align-items:start; } .check-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; } .check-grid div,.skill,.provider-grid div { padding:15px; background:var(--panel); border:1px solid var(--line); } .provider-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:34px; } .provider-grid strong,.provider-grid span { display:block; } .provider-grid span { color:var(--muted); margin-top:4px; } .flow { display:flex; align-items:center; gap:12px; overflow-x:auto; padding:20px 0 16px; } .flow div { flex:1; min-width:128px; padding:18px 12px; text-align:center; background:var(--dark); color:#fff; border-radius:4px; font-weight:700; line-height:1.25; } .flow i { color:var(--accent); font-style:normal; font-size:1.3rem; } .role-row { display:flex; flex-wrap:wrap; gap:8px; } .role-row span,.tag { display:inline-block; padding:4px 9px; border:1px solid var(--line); border-radius:999px; color:var(--muted); font-size:.75rem; font-weight:700; } .case-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; } .case-card { background:var(--panel); border:1px solid var(--line); padding:25px; display:flex; flex-direction:column; min-height:260px; } .case-card h3 { margin-bottom:10px; } .case-card .text-link { margin-top:auto; font-weight:750; text-decoration:none; } .tag-row { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 20px; } .tag.verified { color:#0a5e46; background:var(--accent-soft); border-color:#afd9cc; } .architecture { display:grid; gap:7px; max-width:440px; } .architecture span { padding:11px 15px; border:1px solid var(--line); background:var(--panel); } .architecture b { color:var(--accent); text-align:center; } .page-head,.case-hero { padding:82px 0 50px; } .page-head h1,.case-hero h1 { font-size:clamp(2.5rem, 6vw, 4.8rem); } .case-hero { border-bottom:1px solid var(--line); } .case-layout { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:70px; } .case-layout h2 { margin-top:42px; } .case-layout h2:first-child { margin-top:0; } .case-layout h3 { margin-top:28px; margin-bottom:8px; font-size:1rem; letter-spacing:0; } .facts { display:grid; grid-template-columns:180px 1fr; border-top:1px solid var(--line); } .facts dt,.facts dd { padding:12px 0; border-bottom:1px solid var(--line); margin:0; } .facts dt { color:var(--muted); font-weight:700; } .table-wrap { overflow-x:auto; } table { width:100%; border-collapse:collapse; } th,td { text-align:left; padding:12px 14px; border:1px solid var(--line); vertical-align:top; } th { width:220px; background:#eef2f0; } .case-aside { position:sticky; top:20px; align-self:start; } .aside-card { padding:22px; background:var(--panel); border:1px solid var(--line); margin-bottom:16px; } .aside-card ul { padding-left:20px; } .disclaimer { border-top:4px solid var(--accent); font-size:.9rem; } .prose { max-width:820px; } .prose h2 { margin-top:42px; } .prose h2:first-child { margin-top:0; } .skill-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:28px; } .skill { font-weight:700; } .footer { border-top:1px solid var(--line); padding:35px 0 55px; color:var(--muted); font-size:.84rem; } @media (max-width:800px) { .nav { align-items:flex-start; padding:18px 0; flex-direction:column; } .nav-links { justify-content:flex-start; gap:12px; } .hero,.split,.case-layout { grid-template-columns:1fr; gap:35px; } .hero { padding:65px 0 55px; } .metrics-grid { grid-template-columns:repeat(2,1fr); } .metric { border-bottom:1px solid var(--line); } .provider-grid,.case-grid { grid-template-columns:1fr; } .case-aside { position:static; } .skill-grid { grid-template-columns:1fr 1fr; } } @media print { .nav-links,.button-row,.footer { display:none; } body { background:#fff; } .section,.page-head,.case-hero { padding:28px 0; } a { color:inherit; text-decoration:none; } }

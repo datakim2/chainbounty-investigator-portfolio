@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-09T11:29:31Z",
+  "generated_at": "2026-08-09T11:42:47Z",
   "portfolio_title": "On-Chain Investigation & Threat Intelligence Portfolio",
   "owner_name": "[YOUR NAME]",
   "owner_email": "[YOUR PUBLIC EMAIL]",
@@ -29,14 +29,22 @@
       "slug": "movie-token",
       "incident_date": "2026-03-10",
       "chain": "bsc",
-      "attack_type": "BRIDGE_EXPLOIT",
+      "attack_type": "TOKEN_LOGIC_PRICE_MANIPULATION_EXPLOIT",
       "source": {
         "name": "CertiK official incident analysis",
+        "source_title": "Movie Token Incident Analysis - CertiK",
+        "source_url": "https://www.certik.com/blog/movie-token-incident-analysis",
         "url": "https://www.certik.com/blog/movie-token-incident-analysis",
-        "publication_date": null,
-        "retrieved_at": null
+        "publication_date": "2026-03-19",
+        "retrieved_at": "2026-08-09T11:38:58Z"
       },
       "primary_attacker": "0xDB0901A3254f47c0CE57fFFCE2C730Bc33A1c0e1",
+      "primary_attacker_address": "0xDB0901A3254f47c0CE57fFFCE2C730Bc33A1c0e1",
+      "source_attributed_exploiter_addresses": [
+        "0xDB0901A3254f47c0CE57fFFCE2C730Bc33A1c0e1"
+      ],
+      "downstream_fund_flow_addresses": [],
+      "unknown_control_addresses": [],
       "related_attacker_addresses": [],
       "malicious_contracts": [
         "0xDf7eD22d1FA65eAc11A0806b7bb5F35d4A1e957D"
@@ -68,7 +76,9 @@
           "ATTACKER_IS_FROM"
         ]
       },
-      "technical_summary": "On 10 March 2026, the Movie Token (MT) contract was exploited for approximately $242,000 due to a critical flaw in its 'sell' logic. The",
+      "technical_summary": "On 10 March 2026, the Movie Token (MT) contract was exploited for approximately $242,000 because its sell logic double-counted tokens sent to the liquidity pair and to pendingBurnAmount. The later burn created an artificial supply shock, distorted the MT price, and enabled the attacker to drain value from the pool.",
+      "fund_flow": [],
+      "unverified_fund_flow_notes": [],
       "loss_amount": "approximately $242,000",
       "confidence": {
         "verified_fact": [
@@ -97,14 +107,22 @@
       "slug": "truebit",
       "incident_date": "2026-01-08",
       "chain": "ethereum",
-      "attack_type": "BRIDGE_EXPLOIT",
+      "attack_type": "INTEGER_OVERFLOW_TOKEN_MINTING_EXPLOIT",
       "source": {
         "name": "CertiK official incident analysis",
+        "source_title": "Truebit Incident Analysis - CertiK",
+        "source_url": "https://www.certik.com/blog/truebit-incident-analysis",
         "url": "https://www.certik.com/blog/truebit-incident-analysis",
-        "publication_date": null,
-        "retrieved_at": null
+        "publication_date": "2026-01-08",
+        "retrieved_at": "2026-08-09T11:38:58Z"
       },
       "primary_attacker": "0x6C8EC8f14bE7C01672d31CFa5f2CEfeAB2562b50",
+      "primary_attacker_address": "0x6C8EC8f14bE7C01672d31CFa5f2CEfeAB2562b50",
+      "source_attributed_exploiter_addresses": [
+        "0x6C8EC8f14bE7C01672d31CFa5f2CEfeAB2562b50"
+      ],
+      "downstream_fund_flow_addresses": [],
+      "unknown_control_addresses": [],
       "related_attacker_addresses": [],
       "malicious_contracts": [
         "0x1De399967B206e446B4E9AeEb3Cb0A0991bF11b8"
@@ -136,7 +154,9 @@
           "ATTACKER_INTERACTED_WITH_CONTRACT"
         ]
       },
-      "technical_summary": "On 08 January 2026, Truebit was exploited for approximately $26.6M as a result of an integer overflow",
+      "technical_summary": "On 8 January 2026, Truebit was exploited for approximately $26.6M through an integer-overflow vulnerability in pre-0.8 Solidity arithmetic. The reported exploiter used the overflow to mint TRU for zero ETH and swap the minted tokens for ETH; the bounded public case validates the first source-attributed exploiter and its referenced transaction.",
+      "fund_flow": [],
+      "unverified_fund_flow_notes": [],
       "loss_amount": "approximately $26.6M",
       "confidence": {
         "verified_fact": [
@@ -165,20 +185,36 @@
       "slug": "gnosispay",
       "incident_date": "2026-06-01",
       "chain": "gnosis",
-      "attack_type": "BRIDGE_EXPLOIT",
+      "attack_type": "SIGNATURE_VERIFICATION_AUTHORIZATION_BYPASS",
       "source": {
         "name": "CertiK official incident analysis",
+        "source_title": "GnosisPay Incident Analysis - CertiK",
+        "source_url": "https://www.certik.com/blog/gnosispay-incident-analysis",
         "url": "https://www.certik.com/blog/gnosispay-incident-analysis",
-        "publication_date": null,
-        "retrieved_at": null
+        "publication_date": "2026-06-04",
+        "retrieved_at": "2026-08-09T11:38:58Z"
       },
       "primary_attacker": "0x81BA8A2b895D30280bca199C2Ff75f3F058d4C6c",
-      "related_attacker_addresses": [
+      "primary_attacker_address": "0x81BA8A2b895D30280bca199C2Ff75f3F058d4C6c",
+      "source_attributed_exploiter_addresses": [
+        "0x81BA8A2b895D30280bca199C2Ff75f3F058d4C6c",
+        "0xb1834575349c6eb56675c35b4109c3d3a77dd2fc"
+      ],
+      "downstream_fund_flow_addresses": [
         "0xb1834575349c6eb56675c35b4109c3d3a77dd2fc",
         "0xcce200e0df2f6d47ccffc0e64e6fddc145b13f67",
         "0x3eb18b54a2f7500c3a581197cf7d9fbd62516160",
         "0x0dda0f6aa7b3e0ec1273c4e47c56e7bed57a308c",
         "0x31c2c0c4ab37a89d38968735f8ad9f04e332576a"
+      ],
+      "unknown_control_addresses": [
+        "0xcce200e0df2f6d47ccffc0e64e6fddc145b13f67",
+        "0x3eb18b54a2f7500c3a581197cf7d9fbd62516160",
+        "0x0dda0f6aa7b3e0ec1273c4e47c56e7bed57a308c",
+        "0x31c2c0c4ab37a89d38968735f8ad9f04e332576a"
+      ],
+      "related_attacker_addresses": [
+        "0xb1834575349c6eb56675c35b4109c3d3a77dd2fc"
       ],
       "malicious_contracts": [],
       "primary_transaction": "0x61af4383f94423f4acad8d4a04d3d473f258be3806f3e55d2f18b7fcc475e580",
@@ -210,7 +246,29 @@
           "ATTACKER_IS_FROM"
         ]
       },
-      "technical_summary": "On 01 June 2026 an attacker drained dozens of GnosisPay Safes on Gnosis Chain. The attack vector was a signature-verification flaw in the GnosisPay Delay module. The module checks transactions via moduleTxSignedBy(). It parses r,s,v values from attacker-controlled msg.data. By crafting nested signature data, the attacker caused verification to traverse first through a Biconomy Safe and then to an attacker-controlled contract that always returned the EIP-1271 magic value. As a result, the module incorrectly accepted the transaction as authorized. The attacker queued 41 transactions, waited out the module's cooldown, then executed them. Each transferred EURe and GNO to attacker wallets leading to the loss of ~$265K.",
+      "technical_summary": "On 1 June 2026, an attacker drained dozens of GnosisPay Safes after a signature-verification flaw in the GnosisPay Delay module accepted attacker-crafted nested signature data. The crafted verification path reached attacker-prepared EIP-1271 contracts that returned the expected magic value, allowing queued transactions to transfer EURe and GNO from victim Safes.",
+      "fund_flow": [
+        {
+          "hop": 1,
+          "chain": "ethereum",
+          "from": "0x81BA8A2b895D30280bca199C2Ff75f3F058d4C6c",
+          "to": "0x89c6340B1a1f4b25D36cd8B063D49045caF3f818",
+          "to_label": "LI.FI: Permit2 Proxy 2",
+          "tx_hash": "0x1138fd1bb2708062cb577b0ffb275c847a1964efff019156768e530e3a52dd7e",
+          "asset": "USDT",
+          "amount": "246,388.411645",
+          "timestamp": "2026-06-01T06:33:11Z",
+          "evidence_status": "VERIFIED_SOURCE_AND_EXPLORER",
+          "source_attribution_status": "SOURCE_ATTRIBUTED_EXPLOIT_WALLET_OUTFLOW",
+          "evidence_urls": [
+            "https://www.certik.com/blog/gnosispay-incident-analysis",
+            "https://etherscan.io/tx/0x1138fd1bb2708062cb577b0ffb275c847a1964efff019156768e530e3a52dd7e"
+          ]
+        }
+      ],
+      "unverified_fund_flow_notes": [
+        "CertiK describes subsequent routing through LI.FI/Relay and an XMR split, but those downstream hops are not independently reproduced by the bounded local validator and remain UNVERIFIED in this portfolio."
+      ],
       "loss_amount": "$265K",
       "confidence": {
         "verified_fact": [

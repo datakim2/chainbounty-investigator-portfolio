@@ -16,6 +16,79 @@ from typing import Any
 
 SUPPORTED_CHAINS = {"ethereum", "eth", "gnosis", "bsc", "bnb", "bnb smart chain"}
 PREFERRED_CASES = ["Movie Token", "Truebit", "GnosisPay"]
+
+# These public-case facts were rechecked against the cited CertiK incident
+# pages before the 2026-08-09 publication build. They intentionally override
+# stale or truncated fields in the internal DB without copying that DB into
+# the public repository.
+CASE_FACTS: dict[str, dict[str, Any]] = {
+    "movie token": {
+        "source_title": "Movie Token Incident Analysis - CertiK",
+        "publication_date": "2026-03-19",
+        "attack_type": "TOKEN_LOGIC_PRICE_MANIPULATION_EXPLOIT",
+        "technical_summary": (
+            "On 10 March 2026, the Movie Token (MT) contract was exploited for approximately $242,000 because its sell logic double-counted tokens sent to the liquidity pair and to pendingBurnAmount. "
+            "The later burn created an artificial supply shock, distorted the MT price, and enabled the attacker to drain value from the pool."
+        ),
+    },
+    "truebit": {
+        "source_title": "Truebit Incident Analysis - CertiK",
+        "publication_date": "2026-01-08",
+        "attack_type": "INTEGER_OVERFLOW_TOKEN_MINTING_EXPLOIT",
+        "technical_summary": (
+            "On 8 January 2026, Truebit was exploited for approximately $26.6M through an integer-overflow vulnerability in pre-0.8 Solidity arithmetic. "
+            "The reported exploiter used the overflow to mint TRU for zero ETH and swap the minted tokens for ETH; the bounded public case validates the first source-attributed exploiter and its referenced transaction."
+        ),
+    },
+    "gnosispay": {
+        "source_title": "GnosisPay Incident Analysis - CertiK",
+        "publication_date": "2026-06-04",
+        "attack_type": "SIGNATURE_VERIFICATION_AUTHORIZATION_BYPASS",
+        "technical_summary": (
+            "On 1 June 2026, an attacker drained dozens of GnosisPay Safes after a signature-verification flaw in the GnosisPay Delay module accepted attacker-crafted nested signature data. "
+            "The crafted verification path reached attacker-prepared EIP-1271 contracts that returned the expected magic value, allowing queued transactions to transfer EURe and GNO from victim Safes."
+        ),
+        "source_attributed_exploiter_addresses": [
+            "0x81BA8A2b895D30280bca199C2Ff75f3F058d4C6c",
+            "0xb1834575349c6eb56675c35b4109c3d3a77dd2fc",
+        ],
+        "downstream_fund_flow_addresses": [
+            "0xb1834575349c6eb56675c35b4109c3d3a77dd2fc",
+            "0xcce200e0df2f6d47ccffc0e64e6fddc145b13f67",
+            "0x3eb18b54a2f7500c3a581197cf7d9fbd62516160",
+            "0x0dda0f6aa7b3e0ec1273c4e47c56e7bed57a308c",
+            "0x31c2c0c4ab37a89d38968735f8ad9f04e332576a",
+        ],
+        "unknown_control_addresses": [
+            "0xcce200e0df2f6d47ccffc0e64e6fddc145b13f67",
+            "0x3eb18b54a2f7500c3a581197cf7d9fbd62516160",
+            "0x0dda0f6aa7b3e0ec1273c4e47c56e7bed57a308c",
+            "0x31c2c0c4ab37a89d38968735f8ad9f04e332576a",
+        ],
+        "fund_flow": [
+            {
+                "hop": 1,
+                "chain": "ethereum",
+                "from": "0x81BA8A2b895D30280bca199C2Ff75f3F058d4C6c",
+                "to": "0x89c6340B1a1f4b25D36cd8B063D49045caF3f818",
+                "to_label": "LI.FI: Permit2 Proxy 2",
+                "tx_hash": "0x1138fd1bb2708062cb577b0ffb275c847a1964efff019156768e530e3a52dd7e",
+                "asset": "USDT",
+                "amount": "246,388.411645",
+                "timestamp": "2026-06-01T06:33:11Z",
+                "evidence_status": "VERIFIED_SOURCE_AND_EXPLORER",
+                "source_attribution_status": "SOURCE_ATTRIBUTED_EXPLOIT_WALLET_OUTFLOW",
+                "evidence_urls": [
+                    "https://www.certik.com/blog/gnosispay-incident-analysis",
+                    "https://etherscan.io/tx/0x1138fd1bb2708062cb577b0ffb275c847a1964efff019156768e530e3a52dd7e",
+                ],
+            }
+        ],
+        "unverified_fund_flow_notes": [
+            "CertiK describes subsequent routing through LI.FI/Relay and an XMR split, but those downstream hops are not independently reproduced by the bounded local validator and remain UNVERIFIED in this portfolio."
+        ],
+    },
+}
 ADDRESS_EXPLORERS = {
     "ethereum": "https://etherscan.io/address/{value}",
     "eth": "https://etherscan.io/address/{value}",
@@ -81,7 +154,9 @@ def relation_values(incident: dict[str, Any]) -> list[str]:
     return unique(validation.get("relationships") or incident.get("relationships") or [])
 
 
-def public_case(incident: dict[str, Any]) -> dict[str, Any]:
+def public_case(incident: dict[str, Any], *, source_retrieved_at: str | None = None) -> dict[str, Any]:
+    project = text(incident.get("project"))
+    facts = CASE_FACTS.get(project.lower(), {})
     attackers = unique(incident.get("attacker_addresses"))
     matched = unique(incident.get("matched_attacker_addresses"))
     wallet = matched[0] if matched else attackers[0] if attackers else None
@@ -90,22 +165,29 @@ def public_case(incident: dict[str, Any]) -> dict[str, Any]:
     address_url = existing_address_url(incident, wallet) if wallet else None
     address_url = address_url or explorer_url(chain, wallet)
     tx_url = explorer_url(chain, tx, tx=True)
-    related = [value for value in attackers if not wallet or value.lower() != wallet.lower()]
+    source_exploiters = unique(facts.get("source_attributed_exploiter_addresses")) or attackers
+    related = [value for value in source_exploiters if not wallet or value.lower() != wallet.lower()]
     source = text(incident.get("source_url"))
     relations = relation_values(incident)
     return {
-        "project": text(incident.get("project")) or "Unknown project",
-        "slug": text(incident.get("project")).lower().replace("/", "-").replace(" ", "-") or "incident",
+        "project": project or "Unknown project",
+        "slug": project.lower().replace("/", "-").replace(" ", "-") or "incident",
         "incident_date": text(incident.get("incident_date")) or "UNKNOWN",
         "chain": text(incident.get("chain")) or "UNKNOWN",
-        "attack_type": text(incident.get("attack_type")) or "OTHER_WEB3_THREAT",
+        "attack_type": text(facts.get("attack_type")) or text(incident.get("attack_type")) or "OTHER_WEB3_THREAT",
         "source": {
             "name": "CertiK official incident analysis" if text(incident.get("source")) == "certik_official_incident_analysis" else text(incident.get("source")) or "UNKNOWN",
+            "source_title": text(facts.get("source_title")) or None,
+            "source_url": source or None,
             "url": source or None,
-            "publication_date": incident.get("publication_date") or None,
-            "retrieved_at": incident.get("source_retrieved_at") or incident.get("retrieved_at") or None,
+            "publication_date": facts.get("publication_date") or incident.get("publication_date") or None,
+            "retrieved_at": source_retrieved_at or incident.get("source_retrieved_at") or incident.get("retrieved_at") or None,
         },
         "primary_attacker": wallet,
+        "primary_attacker_address": wallet,
+        "source_attributed_exploiter_addresses": source_exploiters,
+        "downstream_fund_flow_addresses": unique(facts.get("downstream_fund_flow_addresses")),
+        "unknown_control_addresses": unique(facts.get("unknown_control_addresses")),
         "related_attacker_addresses": related,
         "malicious_contracts": unique(incident.get("malicious_contracts")),
         "primary_transaction": tx,
@@ -126,7 +208,9 @@ def public_case(incident: dict[str, Any]) -> dict[str, Any]:
             "matched_malicious_contracts": unique(incident.get("matched_malicious_contracts")),
             "relationships": relations,
         },
-        "technical_summary": text(incident.get("technical_description")) or "A technical summary was not preserved in the public dataset.",
+        "technical_summary": text(facts.get("technical_summary")) or text(incident.get("technical_description")) or "A technical summary was not preserved in the public dataset.",
+        "fund_flow": facts.get("fund_flow") or [],
+        "unverified_fund_flow_notes": unique(facts.get("unverified_fund_flow_notes")),
         "loss_amount": text(incident.get("loss_amount")) or None,
         "confidence": {
             "verified_fact": [
@@ -146,7 +230,7 @@ def public_case(incident: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def build(db_path: Path, output: Path, tests_passing: int | None = None, github_url: str | None = None) -> dict[str, Any]:
+def build(db_path: Path, output: Path, tests_passing: int | None = None, github_url: str | None = None, source_retrieved_at: str | None = None) -> dict[str, Any]:
     db = json.loads(db_path.read_text(encoding="utf-8"))
     incidents = [item for item in db.get("incidents", []) if isinstance(item, dict)]
     supported = [item for item in incidents if text(item.get("chain")).lower() in SUPPORTED_CHAINS]
@@ -156,7 +240,7 @@ def build(db_path: Path, output: Path, tests_passing: int | None = None, github_
     for name in PREFERRED_CASES:
         found = next((item for item in verified if text(item.get("project")).lower() == name.lower()), None)
         if found:
-            selected.append(public_case(found))
+            selected.append(public_case(found, source_retrieved_at=source_retrieved_at))
     metrics = {
         "incidents_analyzed": len(incidents),
         "attacker_and_tx_extracted": sum(bool(unique(item.get("attacker_addresses"))) and bool(unique(item.get("transaction_hashes"))) for item in incidents),
@@ -208,8 +292,9 @@ def main() -> int:
     parser.add_argument("--output", type=Path, default=Path("data/portfolio.json"))
     parser.add_argument("--tests-passing", type=int)
     parser.add_argument("--github-url")
+    parser.add_argument("--source-retrieved-at")
     args = parser.parse_args()
-    payload = build(args.source_db, args.output, args.tests_passing, args.github_url)
+    payload = build(args.source_db, args.output, args.tests_passing, args.github_url, args.source_retrieved_at)
     print(json.dumps({
         "output": str(args.output),
         "incidents_analyzed": payload["metrics"]["incidents_analyzed"],
