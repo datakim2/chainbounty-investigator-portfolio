@@ -146,7 +146,7 @@ def public_case(incident: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def build(db_path: Path, output: Path, tests_passing: int | None = None) -> dict[str, Any]:
+def build(db_path: Path, output: Path, tests_passing: int | None = None, github_url: str | None = None) -> dict[str, Any]:
     db = json.loads(db_path.read_text(encoding="utf-8"))
     incidents = [item for item in db.get("incidents", []) if isinstance(item, dict)]
     supported = [item for item in incidents if text(item.get("chain")).lower() in SUPPORTED_CHAINS]
@@ -179,7 +179,7 @@ def build(db_path: Path, output: Path, tests_passing: int | None = None) -> dict
         "owner_name": "[YOUR NAME]",
         "owner_email": "[YOUR PUBLIC EMAIL]",
         "owner_x": "[YOUR X PROFILE]",
-        "github_url": None,
+        "github_url": github_url,
         "independent_project": True,
         "not_affiliated_with_chainbounty": True,
         "metrics": metrics,
@@ -207,8 +207,9 @@ def main() -> int:
     parser.add_argument("--source-db", type=Path, required=True)
     parser.add_argument("--output", type=Path, default=Path("data/portfolio.json"))
     parser.add_argument("--tests-passing", type=int)
+    parser.add_argument("--github-url")
     args = parser.parse_args()
-    payload = build(args.source_db, args.output, args.tests_passing)
+    payload = build(args.source_db, args.output, args.tests_passing, args.github_url)
     print(json.dumps({
         "output": str(args.output),
         "incidents_analyzed": payload["metrics"]["incidents_analyzed"],
